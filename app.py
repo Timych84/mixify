@@ -1,28 +1,3 @@
-"""
-Prerequisites
-
-    pip3 install spotipy Flask Flask-Session
-
-    // from your [app settings](https://developer.spotify.com/dashboard/applications)
-    export SPOTIPY_CLIENT_ID=client_id_here
-    export SPOTIPY_CLIENT_SECRET=client_secret_here
-    export SPOTIPY_REDIRECT_URI='http://127.0.0.1:8080' // must contain a port
-    // SPOTIPY_REDIRECT_URI must be added to your [app settings](https://developer.spotify.com/dashboard/applications)
-    OPTIONAL
-    // in development environment for debug output
-    export FLASK_ENV=development
-    // so that you can invoke the app outside of the file's directory include
-    export FLASK_APP=/path/to/spotipy/examples/app.py
-
-    // on Windows, use `SET` instead of `export`
-
-Run app.py
-
-    python3 app.py OR python3 -m flask run
-    NOTE: If receiving "port already in use" error, try other ports: 5000, 8090, 8888, etc...
-        (will need to be updated in your Spotify app and SPOTIPY_REDIRECT_URI variable)
-"""
-
 import os
 import json
 import sys
@@ -41,7 +16,7 @@ Session(app)
 def index():
 
     cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
-    auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-read-currently-playing playlist-modify-private',
+    auth_manager = spotipy.oauth2.SpotifyOAuth(scope="playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative user-read-recently-played",
                                                cache_handler=cache_handler,
                                                show_dialog=True)
 
@@ -62,6 +37,7 @@ def index():
            f'<a href="/playlists">my playlists</a> | ' \
            f'<a href="/currently_playing">currently playing</a> | ' \
            f'<a href="/test">test</a> | ' \
+           f'<a href="/dmixes">dmixes</a> | ' \
         f'<a href="/current_user">me</a>' \
 
 
@@ -104,8 +80,23 @@ def playlists():
         return redirect('/')
 
     spotify = spotipy.Spotify(auth_manager=auth_manager)
-    return spotify.current_user_playlists()
+    current_user = spotify.current_user()
+    # return spotify.current_user_playlists()
+    return spotify.user_playlists(spotify.current_user()['id'])
 
+@app.route('/dmixes')
+def dmixes():
+    cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
+    auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
+    if not auth_manager.validate_token(cache_handler.get_cached_token()):
+        return redirect('/')
+    spotify = spotipy.Spotify(auth_manager=auth_manager)
+    # return spotify.current_user_playlists()
+    # playlists = spotify.current_user_playlists()
+    playlists = spotify.search(q="Daily Mix", type="playlist", limit=50)
+    filtered_playlists = [playlist for playlist in playlists['playlists']['items'] if playlist['owner']['id'] == 'spotify']
+    sorted_playlists = sorted(filtered_playlists, key=lambda x: x['name'].lower())
+    return render_template('dmixes.html', playlists=sorted_playlists)
 
 @app.route('/currently_playing')
 def currently_playing():

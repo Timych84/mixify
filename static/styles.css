@@ -1,0 +1,263 @@
+body {
+    background-image: url('/static/images/background-image.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    font-family: 'Circular Spotify Text', Arial, sans-serif; /* Use Spotify font if available */
+    margin: 0;
+    color: #333;
+    overflow: hidden; /* Prevent content overflow */
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.2); /* Adjust the alpha value for darkness */
+    backdrop-filter: blur(5px); /* Adjust the blur value as needed */
+    z-index: 1; /* Place it above the content */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    color: #1DB954;
+    position: relative;
+    z-index: 2; /* Place it above the overlay */
+}
+
+h1 {
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    /* text-transform: uppercase; */
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+    /* Use Arial as the primary font and fallback to sans-serif */
+    font-family: 'Arial', sans-serif;
+    border-radius: 15px; /* Adjust the border-radius for a more curvy appearance */
+}
+
+.playlist-grid {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.playlist-item {
+    margin: 10px;
+    width: calc(16.666% - 20px); /* Adjusted width for better spacing */
+    max-width: 200px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease-in-out;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+}
+
+.playlist-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 0 0 8px 8px;
+    box-sizing: border-box;
+}
+
+.playlist-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.playlist-description {
+    font-size: 14px;
+    color: #555;
+}
+
+button {
+    display: block;
+    margin: 20px auto; /* Adjusted margin for better spacing */
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #1DB954;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#bottomTile {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center the content */
+}
+
+.visible {
+    display: block !important; /* Ensure visibility even without the 'visible' class */
+}
+
+/* Styling for small images */
+.small-image {
+    max-width: 50px; /* Adjust the size as needed */
+    max-height: 50px; /* Adjust the size as needed */
+    margin: 5px; /* Adjust the spacing as needed */
+    display: inline-block; /* Display images inline */
+}
+
+/* Flex container for the small images */
+#newTileImages {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center; /* Center items vertically */
+}
+
+/* Ensure that the container width is enough for two rows */
+#bottomTile {
+    min-width: 180px; /* Adjust the min-width based on your image width */
+    max-width: 180px; /* Set max-width to match the new image width */
+    text-align: center; /* Center the content horizontally */
+}
+
+/* Animation for playlist items */
+@keyframes movePlaylistItem {
+    from {
+        transform: translate(0, 0);
+    }
+    to {
+        transform: translate(0, 120px); /* Adjust the vertical distance as needed */
+    }
+}
+
+.playlist-item.move {
+    animation: movePlaylistItem 0.5s ease-in-out;
+}
+
+/* Add these CSS rules to define animations */
+@keyframes moveForward {
+    from {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+    to {
+        transform: translate(0, 0);
+        opacity: 0;
+    }
+}
+
+@keyframes moveBackward {
+    from {
+        transform: translate(0, 0);
+        opacity: 0;
+    }
+    to {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+/* Add this CSS rule to ensure the animations run smoothly */
+.playlist-item {
+    animation-timing-function: ease-in-out;
+}
+
+#newTileImages {
+    text-align: center;
+}
+
+#newTileImages img {
+    width: 100%;
+    max-width: 200px; /* Adjust the max-width as needed */
+    height: auto;
+}
+
+#bottomTile {
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* Add the following styles for the editable field */
+#editableTextContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#editableText {
+    font-size: 24px; /* Adjust the font size based on your preference */
+    margin-right: 10px;
+}
+
+#editIcon {
+    cursor: pointer;
+    color: #1DB954; /* Change the color to green */
+}
+
+/* Add styles for the popup window */
+#editPopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+#editPopupText {
+    font-size: 24px; /* Adjust the font size based on your preference */
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#okButton {
+    background-color: #1DB954;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+#newTotalMix {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#newTileText {
+    font-size: 18px;
+    margin-right: 10px;
+    order: -1; /* Move it to the top */
+    color: #333;
+}

@@ -3,7 +3,7 @@ import sys
 from spotipy.oauth2 import SpotifyOAuth
 from datetime import datetime
 
-spotify_scope = "user-read-currently-playing"
+spotify_scope = "playlist-modify-public playlist-modify-private playlist-read-private user-read-recently-played"
 # spotify_user = #open a file and get my spotify username
 
 spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=spotify_scope, redirect_uri="http://127.0.0.1:5000", cache_path=".spotifcache"))
@@ -12,7 +12,7 @@ spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=spotify_scope, redirec
 # spotify_user = spotify.current_user()
 # print(f"track: {current_track['item']['id']}", file=sys.stdout)
 current_datetime = datetime.now()
-formatted_datetime = current_datetime.strftime("%Y%m%d%H%M%S")
+formatted_datetime = current_datetime.strftime("%d.%m.%Y %H:%M:%S")
 total_mix_playlist_name = "Total Daily Mix"
 total_mix_playlist_id = None
 my_playlists = spotify.current_user_playlists()
@@ -21,7 +21,7 @@ for my_playlist in my_playlists['items']:
         spotify.current_user_unfollow_playlist(my_playlist['id'])
         # total_mix_playlist_id = my_playlist['id']
 if not total_mix_playlist_id:
-    total_mix_playlist = spotify.user_playlist_create(spotify.current_user()['id'], total_mix_playlist_name, False, False, "Generated Total Daily Mix")
+    total_mix_playlist = spotify.user_playlist_create(spotify.current_user()['id'], total_mix_playlist_name, False, False, f"Generated Total Daily Mix {formatted_datetime}")
     total_mix_playlist_id = total_mix_playlist['id']
 
 playlists = spotify.search(q="Daily Mix", type="playlist", limit=50)

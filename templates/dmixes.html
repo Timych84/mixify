@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Daily Mixes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="container">
+        <h1>Your Spotify Daily Mixes</h1>
+        <ul id="playlistContainer" class="playlist-grid">
+            {% for playlist in playlists %}
+                <li class="playlist-item">
+                    <img src="{{ playlist.images[0].url }}" alt="{{ playlist.name }} Image">
+                    <div class="playlist-info">
+                        <h3 class="playlist-name">{{ playlist.name }}</h3>
+                        <p class="playlist-description">{{ playlist.description }}</p>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <div id="newTotalMix" class="editable-text">
+            <h2 id="editableText">New Total Mix</h2>
+            <span id="editIcon">&#9998;</span>
+        </div>
+        <button id="animateBtn">Create New Total Mix</button>
+        <div id="bottomTile" class="bottom-tile">
+            <div id="newTileImages"></div>
+            <div id="newTotalMixTile" class="editable-text" style="display: flex;">
+                <h2 id="newTileText">New Total Mix</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup window for editing -->
+    <div id="editPopup">
+        <input type="text" id="editPopupText">
+        <button id="okButton">OK</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
