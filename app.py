@@ -1,9 +1,10 @@
 import os
 import json
 import sys
-from flask import Flask, session, request, redirect, render_template
+from flask import Flask, session, request, redirect, render_template, url_for
 from flask_session import Session
 import spotipy
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)
@@ -28,17 +29,20 @@ def index():
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 1. Display sign in link when no token
         auth_url = auth_manager.get_authorize_url()
-        return f'<h2><a href="{auth_url}">Sign in</a></h2>'
+        return render_template('signin.html', auth_url=auth_url)
+        # return f'<h2><a href="{auth_url}">Sign in</a></h2>'
 
     # Step 3. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-    return f'<h2>Hi {spotify.me()["display_name"]}, ' \
-           f'<small><a href="/sign_out">[sign out]<a/></small></h2>' \
-           f'<a href="/playlists">my playlists</a> | ' \
-           f'<a href="/currently_playing">currently playing</a> | ' \
-           f'<a href="/test">test</a> | ' \
-           f'<a href="/dmixes">dmixes</a> | ' \
-        f'<a href="/current_user">me</a>' \
+    # spotify = spotipy.Spotify(auth_manager=auth_manager)
+    authenticated = 'token_info' in session
+    return render_template('index.html', authenticated=authenticated)
+    # return f'<h2>Hi {spotify.me()["display_name"]}, ' \
+    #        f'<small><a href="/sign_out">[sign out]<a/></small></h2>' \
+    #        f'<a href="/playlists">my playlists</a> | ' \
+    #        f'<a href="/currently_playing">currently playing</a> | ' \
+    #        f'<a href="/test">test</a> | ' \
+    #        f'<a href="/dmixes">dmixes</a> | ' \
+    #     f'<a href="/current_user">me</a>' \
 
 
 
@@ -47,30 +51,35 @@ def sign_out():
     session.pop("token_info", None)
     return redirect('/')
 
-@app.route('/test')
-def test():
-    cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
-    auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        return redirect('/')
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-    playlists = spotify.search(q="Daily Mix", type="playlist")
-    # playlists = spotify.current_user_playlists()
-    for playlist in playlists['playlists']['items']:
-        if playlist['owner']['id'] == 'spotify':
-            print("Playlist Name:", playlist['name'], file=sys.stdout)
-            offset = 0
-            while True:
-                response = spotify.playlist_items(playlist['id'], offset=offset, fields='items.track.id,total', additional_types=['track'])
-                if len(response['items']) == 0:
-                    break
-                print(response['items'], file=sys.stdout)
-                offset = offset + len(response['items'])
-                print(offset, "/", response['total'], file=sys.stdout)
+
+@app.route('/recommendations')
+def recommendations():
+    return "recommendations"
+
+# @app.route('/test')
+# def test():
+#     cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
+#     auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
+#     if not auth_manager.validate_token(cache_handler.get_cached_token()):
+#         return redirect('/')
+#     spotify = spotipy.Spotify(auth_manager=auth_manager)
+#     playlists = spotify.search(q="Daily Mix", type="playlist")
+#     # playlists = spotify.current_user_playlists()
+#     for playlist in playlists['playlists']['items']:
+#         if playlist['owner']['id'] == 'spotify':
+#             print("Playlist Name:", playlist['name'], file=sys.stdout)
+#             offset = 0
+#             while True:
+#                 response = spotify.playlist_items(playlist['id'], offset=offset, fields='items.track.id,total', additional_types=['track'])
+#                 if len(response['items']) == 0:
+#                     break
+#                 print(response['items'], file=sys.stdout)
+#                 offset = offset + len(response['items'])
+#                 print(offset, "/", response['total'], file=sys.stdout)
 
 
-    playlist_names = [playlist['name'] for playlist in playlists['playlists']['items'] if playlist['owner']['id'] == 'spotify']
-    return render_template('playlists.html', playlist_names=playlist_names)
+#     playlist_names = [playlist['name'] for playlist in playlists['playlists']['items'] if playlist['owner']['id'] == 'spotify']
+#     return render_template('playlists.html', playlist_names=playlist_names)
 
 @app.route('/playlists')
 def playlists():
@@ -80,12 +89,12 @@ def playlists():
         return redirect('/')
 
     spotify = spotipy.Spotify(auth_manager=auth_manager)
-    current_user = spotify.current_user()
+    # current_user = spotify.current_user()
     # return spotify.current_user_playlists()
     return spotify.user_playlists(spotify.current_user()['id'])
 
-@app.route('/dmixes')
-def dmixes():
+@app.route('/daily_mix_generator')
+def daily_mix_generator():
     cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
     auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
@@ -96,19 +105,49 @@ def dmixes():
     playlists = spotify.search(q="Daily Mix", type="playlist", limit=50)
     filtered_playlists = [playlist for playlist in playlists['playlists']['items'] if playlist['owner']['id'] == 'spotify']
     sorted_playlists = sorted(filtered_playlists, key=lambda x: x['name'].lower())
-    return render_template('dmixes.html', playlists=sorted_playlists)
+    return render_template('daily_mix_generator.html', playlists=sorted_playlists)
 
-@app.route('/currently_playing')
-def currently_playing():
+@app.route('/create_playlist', methods=['GET', 'POST'])
+def create_playlist():
     cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
     auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         return redirect('/')
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-    track = spotify.current_user_playing_track()
-    if not track is None:
-        return track
-    return "No track currently playing."
+    if request.method == 'POST':
+        playlist_name = request.form.get('playlist_name')
+        if playlist_name:
+            current_datetime = datetime.now()
+            formatted_datetime = current_datetime.strftime("%d.%m.%Y %H:%M:%S")
+
+            # # Get Spotify token
+            # token_info = sp_oauth.get_access_token()
+            # access_token = token_info['access_token']
+
+            # # Create Spotify client
+            # spotify = spotipy.Spotify(auth=access_token)
+
+            # # Create playlist
+            # total_mix_playlist = spotify.user_playlist_create(spotify.current_user()['id'], playlist_name, False, False, f"Generated Total Daily Mix {formatted_datetime}")
+            # total_mix_playlist_id = total_mix_playlist['id']
+
+            # return f"Playlist '{playlist_name}' created successfully! Playlist ID: {total_mix_playlist_id}"
+            return f"Playlist '{playlist_name}' created successfully! Playlist ID:"
+
+        else:
+            return "Please provide a valid playlist name."
+    authenticated = 'token_info' in session
+    return render_template('create_playlist.html', authenticated=authenticated)
+# @app.route('/currently_playing')
+# def currently_playing():
+#     cache_handler = spotipy.cache_handler.FlaskSessionCacheHandler(session)
+#     auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
+#     if not auth_manager.validate_token(cache_handler.get_cached_token()):
+#         return redirect('/')
+#     spotify = spotipy.Spotify(auth_manager=auth_manager)
+#     track = spotify.current_user_playing_track()
+#     if not track is None:
+#         return track
+#     return "No track currently playing."
 
 
 @app.route('/current_user')

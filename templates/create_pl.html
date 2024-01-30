@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Playlist</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles_create.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Create New Playlist</h1>
+        <form action="{{ url_for('create_playlist') }}" method="post">
+            <label for="playlist_name">Playlist Name:</label>
+            <input type="text" id="playlist_name" name="playlist_name" required>
+            <button type="submit">Create Playlist</button>
+        </form>
+    </div>
+</body>
+</html>
