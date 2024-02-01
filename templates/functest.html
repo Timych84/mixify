@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles_functest.css') }}">
+    <title>Text Transformer</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Text Transformer</h1>
+        <form id="transformForm">
+            <label for="inputText">Enter Text:</label>
+            <input type="text" id="inputText" name="inputText" required>
+            <button type="button" onclick="transformText()">Transform</button>
+        </form>
+    </div>
+
+    <div class="modal" id="resultModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p id="modalText"></p>
+        </div>
+    </div>
+
+    <script>
+        function transformText() {
+            var inputText = document.getElementById('inputText').value;
+
+            fetch('/transform', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'inputText=' + encodeURIComponent(inputText),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('modalText').innerText = 'Transformed Text: ' + data.transformed_text;
+                openModal();
+                setTimeout(closeModal, 3000);
+            });
+        }
+
+        function openModal() {
+            document.getElementById('resultModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

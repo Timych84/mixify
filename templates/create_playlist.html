@@ -5,6 +5,34 @@
     <form action="{{ url_for('create_playlist') }}" method="post">
         <label for="playlist_name">Playlist Name:</label>
         <input type="text" id="playlist_name" name="playlist_name" required>
-        <button type="submit">Create Playlist</button>
+        <button type="submit" onclick="showModal('{{ get_flashed_messages()[0] }}')">Create Playlist</button>
+        <p>{{ get_flashed_messages()[0] }}</p>
     </form>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>{{ get_flashed_messages()[0] }}</p>
+        </div>
+    </div>
+
+    <script>
+        function showModal(message) {
+            var modal = document.getElementById("myModal");
+            var modalContent = modal.querySelector('.modal-content p');
+            modalContent.innerText = message;
+            modal.style.display = "block";
+            setTimeout(function () {
+                modal.style.display = "none";
+                window.location.href = "{{ url_for('index') }}"; // Redirect to index after modal closes
+            }, 3000); // Close modal after 3 seconds
+        }
+
+        function closeModal() {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+            window.location.href = "{{ url_for('index') }}"; // Redirect to index after modal closes
+        }
+    </script>
 {% endblock %}

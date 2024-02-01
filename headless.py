@@ -13,7 +13,8 @@ spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=spotify_scope, redirec
 # print(f"track: {current_track['item']['id']}", file=sys.stdout)
 current_datetime = datetime.now()
 formatted_datetime = current_datetime.strftime("%d.%m.%Y %H:%M:%S")
-total_mix_playlist_name = "Total Daily Mix"
+formatted_date = current_datetime.strftime("%d.%m.%Y")
+total_mix_playlist_name = f"Total Daily Mix {formatted_date}"
 total_mix_playlist_id = None
 my_playlists = spotify.current_user_playlists()
 for my_playlist in my_playlists['items']:
