@@ -69,23 +69,59 @@ body {
     margin-left: auto;
 }
 
-.sign-out button {
-    background-color: #dc3545;
-    color: #fff;
+/* Shared styles for buttons and inputs */
+.sign-out button,
+.sign-in button,
+.sign-in input,
+button.create-playlist-btn,
+.sign-in-btn {
     padding: 15px 20px;
-    border: 2px solid #750000;
     border-radius: 30px;
     font-size: 1.2em;
     cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
     margin-left: 10px;
     margin-right: 10px;
+}
+
+/* Individual styles for each button and input */
+.sign-out button {
+    background-color: #dc3545;
+    color: #fff;
+    border: 2px solid #750000;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .sign-out button:hover {
     background-color: #c82333;
     border-color: #c82333;
+}
+
+.sign-in button,
+.sign-in input {
+    background-color: #1db954;
+    color: #fff;
+    border: none;
+}
+
+.sign-in input {
+    background-color: #1fdf64;
+}
+
+.sign-in button:hover,
+.sign-in input:hover {
+    background-color: #1fdf64;
+}
+
+button.create-playlist-btn,
+.sign-in-btn {
+    background-color: #1db954;
+    color: #fff;
+    border: none;
+}
+
+button.create-playlist-btn:hover,
+.sign-in-btn:hover {
+    background-color: #1fdf64;
 }
 
 .container {
@@ -162,4 +198,111 @@ body {
 .close:focus {
     color: #fff;
     text-decoration: none;
+}
+
+/* Jumbotron styles */
+.app-description.jumbotron {
+    background-color: rgba(0, 100, 0, 0.5); /* Dark green color with 50% opacity */
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.app-description h1 {
+    color: #fff;
+}
+
+.app-description ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.app-description li {
+    margin-bottom: 10px;
+}
+
+/* Additional styles for the custom form */
+.custom-form {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+
+}
+
+.custom-label {
+    display: block;
+    font-size: 1.2em;
+    margin-bottom: 5px;
+}
+
+.custom-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.sign-in-btn {
+    background-color: #1db954;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 30px;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.sign-in-btn:hover {
+    background-color: #1fdf64;
+}
+
+.custom-checkbox {
+    width: 30px; /* Adjust the width as needed */
+    height: 30px; /* Adjust the height as needed */
+}
+
+.checkbox-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px; /* Adjust margin as needed */
+}
+
+.custom-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.form-options {
+    display: flex;
+    align-items: center;
+    margin-top: 10px; /* Add margin to the top */
+}
+
+.sign-in-btn {
+    margin-right: 20px; /* Adjust horizontal margin between elements */
+}
+
+.option-text {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0; /* Reset margin-bottom */
+    margin-left: 10px;
 }

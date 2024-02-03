@@ -1,38 +1,35 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
-    <h1>Create New Playlist</h1>
-    <form action="{{ url_for('create_playlist') }}" method="post">
-        <label for="playlist_name">Playlist Name:</label>
-        <input type="text" id="playlist_name" name="playlist_name" required>
-        <button type="submit" onclick="showModal('{{ get_flashed_messages()[0] }}')">Create Playlist</button>
-        <p>{{ get_flashed_messages()[0] }}</p>
-    </form>
+    <div class="container">
+        <h1 class="text-center">Create New Playlist</h1>
+        <form action="{{ url_for('create_playlist') }}" method="post" class="custom-form">
+            <div class="form-group">
+                <input type="text" id="playlist_name" name="playlist_name" class="custom-input" placeholder="Put new playlist name here" required>
+                <div class="form-options">
+                    <button type="submit" onclick="showModal('{{ get_flashed_messages()[0] }}')" class="sign-in-btn">Create Playlist</button>
+                    <input type="checkbox" name="overwrite" class="custom-checkbox">
+                    <label for="overwrite_checkbox" class="option-text">Overwrite if exists</label>
+                </div>
+            </div>
+        </form>
 
-    <!-- Modal -->
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <p>{{ get_flashed_messages()[0] }}</p>
+        <!-- Rest of your content... -->
+
+        <div class="modal-body">
+            {% if create_success is defined %}
+                {% if create_success %}
+                    <div class="alert alert-success" role="alert">
+                        Playlist created successfully! Overwrite: {{ overwrite }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger" role="alert">
+                        Playlist creation failed. Please try again. Overwrite: {{ overwrite }}
+                    </div>
+                {% endif %}
+            {% endif %}
         </div>
+
+        <!-- Rest of your content... -->
     </div>
-
-    <script>
-        function showModal(message) {
-            var modal = document.getElementById("myModal");
-            var modalContent = modal.querySelector('.modal-content p');
-            modalContent.innerText = message;
-            modal.style.display = "block";
-            setTimeout(function () {
-                modal.style.display = "none";
-                window.location.href = "{{ url_for('index') }}"; // Redirect to index after modal closes
-            }, 3000); // Close modal after 3 seconds
-        }
-
-        function closeModal() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "none";
-            window.location.href = "{{ url_for('index') }}"; // Redirect to index after modal closes
-        }
-    </script>
 {% endblock %}

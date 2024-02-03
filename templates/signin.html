@@ -1,10 +1,11 @@
 {% extends 'index.html' %}
 
 {% block content %}
+    {% include 'app_description.html' %}
     <div class="container">
         <h1>Sign In</h1>
         <p>Click the button below to sign in:</p>
-        <a href="{{ auth_url }}" class="spotify-button">
+        <a href="{{ auth_url }}" class="sign-in">
             <button>Sign In with Spotify</button>
         </a>
     </div>
