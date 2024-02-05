@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <h1 class="text-center">Create New Playlist</h1>
     <div class="container">
-        <h1 class="text-center">Create New Playlist</h1>
         <form action="{{ url_for('create_playlist') }}" method="post" class="custom-form">
             <div class="form-group">
                 <input type="text" id="playlist_name" name="playlist_name" class="custom-input" placeholder="Put new playlist name here" required>
@@ -13,8 +13,6 @@
                 </div>
             </div>
         </form>
-
-        <!-- Rest of your content... -->
 
         <div class="modal-body">
             {% if create_success is defined %}
@@ -29,7 +27,5 @@
                 {% endif %}
             {% endif %}
         </div>
-
-        <!-- Rest of your content... -->
     </div>
 {% endblock %}

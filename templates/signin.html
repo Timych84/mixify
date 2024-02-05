@@ -1,7 +1,14 @@
-{% extends 'index.html' %}
+<!-- signin.html -->
+{% extends 'base.html' %}
+
+{% block sign_out_button %}
+    {# Override the sign_out_button block in signin.html to exclude the sign-out button #}
+{% endblock %}
 
 {% block content %}
-    {% include 'app_description.html' %}
+    <div class="container">
+        {% include 'app_description.html' %}
+    </div>
     <div class="container">
         <h1>Sign In</h1>
         <p>Click the button below to sign in:</p>
