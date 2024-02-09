@@ -58,7 +58,6 @@ def create_playlist():
         overwrite = request.form.get('overwrite')
         if playlist_name:
             try:
-                total_mix_playlist_id = "therewillbeid"  # Replace with appropriate logic
                 spotify = get_spotify_client(auth_manager)
                 create_success = create_new_playlist(spotify, playlist_name, overwrite)
                 return render_template('create_playlist.html', playlist_name=playlist_name, create_success=create_success, overwrite=overwrite)

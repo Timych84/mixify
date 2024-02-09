@@ -1,26 +1,65 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1 class="text-center">Your playlists</h1>
-    <div class="container playlist-container">
-        <div class="modal-body">
+<h1 class="text-center py-3">Your Spotify playlists</h1>
+    <!-- <div class="container playlist-container">
+        <div class="col">
             {% if user_playlists %}
-                {% for playlist in user_playlists %}
-                    <div class="playlist-item">
-                        <div class="playlist-number">{{ loop.index }}.</div>
-                        <div class="playlist-info">
-                            {% set playlist_image_url = playlist.images[0].url if playlist.images else url_for('static', filename='/images/no_img.png') %}
-                            <img class="playlist-image" src="{{ playlist_image_url }}" alt="Playlist Image">
-                            <div class="playlist-details">
-                                <h3 class="playlist-name">{{ playlist.name }}</h3>
-                                <p class="playlist-description">{{ playlist.description }}</p>
+                <div class="row row-cols-1">
+                    {% for playlist in user_playlists %}
+                        <div class="card mb-3 text-bg-dark">
+                            <div class="row g-0">
+                              <div class="col-md-1">
+                                {% set playlist_image_url = playlist.images[0].url if playlist.images else url_for('static', filename='/images/no_img.png') %}
+                                <img src="{{ playlist_image_url }}" class="img-fluid rounded-start" alt="Playlist Image" style="max-width: 50px;">
+                              </div>
+                              <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ loop.index }}. {{ playlist.name }}</h5>
+                                    <p class="card-text">{{ playlist.description }}</p>
+                                </div>
+                              </div>
                             </div>
-                        </div>
-                    </div>
+                          </div>
                     {% endfor %}
+                </div>
             {% else %}
                 <p>No playlists available.</p>
             {% endif %}
-        </div>
-    </div>
+        </div> -->
+        <!-- <div class="container">
+            <h1>User Playlists</h1>
+            {% for playlist in user_playlists %}
+                {% set playlist_image_url = playlist.images[0].url if playlist.images else url_for('static', filename='/images/no_img.png') %}
+                <div class="playlist-item">
+                    <div class="row">
+                        <div class="col-xs">
+                            <span>{{ loop.index }}.</span>
+                        </div>
+                        <div class="col">
+                            <img src="{{ playlist_image_url }}" alt="Playlist Image">
+                        </div>
+                        <div class="col">
+                            <h5>{{ playlist.name }}</h5>
+                            <p>{{ playlist.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div> -->
+            <ul class="list-group"></ul>
+                {% for playlist in user_playlists %}
+                    {% set playlist_image_url = playlist.images[0].url if playlist.images else url_for('static', filename='/images/no_img.png') %}
+                    <li class="list-group-item d-flex align-items-center border-bottom">
+                            <div class="me-3" style="width: 30px;">{{ loop.index }}.</div>
+                            <div class="flex-shrink-0 my-2">
+                                <img src="{{ playlist_image_url }}" alt="Playlist Image">
+                            </div>
+                            <div class="fw-bold ms-3 align-middle ">
+                                <p class="my-0 fs-5">{{ playlist.name }}</p>
+                                <p class="my-0 fs-6 fw-light">{{ playlist.description }}</p>
+                            </div>
+                    </li>
+                {% endfor %}
+            </ul>
 {% endblock %}

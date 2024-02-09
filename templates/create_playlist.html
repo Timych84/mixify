@@ -1,31 +1,31 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 class="text-center">Create New Playlist</h1>
-    <div class="container">
-        <form action="{{ url_for('create_playlist') }}" method="post" class="custom-form">
-            <div class="form-group">
-                <input type="text" id="playlist_name" name="playlist_name" class="custom-input" placeholder="Put new playlist name here" required>
-                <div class="form-options">
-                    <button type="submit" onclick="showModal('{{ get_flashed_messages()[0] }}')" class="sign-in-btn">Create Playlist</button>
-                    <input type="checkbox" name="overwrite" class="custom-checkbox">
-                    <label for="overwrite_checkbox" class="option-text">Overwrite if exists</label>
-                </div>
+    <h1  class="text-center py-3">Create New Playlist</h1>
+    <form action="{{ url_for('create_playlist') }}" method="post">
+            <div class="mb-3">
+                <input type="text" class="form-control" id="playlist_name" name="playlist_name"  placeholder="Put new playlist name here" required aria-label="Text input with checkbox">
             </div>
-        </form>
-
-        <div class="modal-body">
-            {% if create_success is defined %}
-                {% if create_success %}
-                    <div class="alert alert-success" role="alert">
-                        Playlist created successfully! Overwrite: {{ overwrite }}
-                    </div>
-                {% else %}
-                    <div class="alert alert-danger" role="alert">
-                        Playlist creation failed. Please try again. Overwrite: {{ overwrite }}
-                    </div>
-                {% endif %}
-            {% endif %}
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center align-items-center mb-3">
+                <button type="submit" class="btn btn-success btn-lg">Create Playlist</button>
+                <input class="form-check-input" name="overwrite" type="checkbox" id="inlineFormCheck">
+                <label class="form-check-label" for="inlineFormCheck">Overwrite if exists</label>
+            </div>
         </div>
+    </form>
+    <div>
+        {% if create_success is defined %}
+            {% if create_success %}
+                <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+                    Playlist created successfully! Overwrite: {{ overwrite }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% else %}
+                <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+                    Playlist creation failed. Please try again. Overwrite: {{ overwrite }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+        {% endif %}
     </div>
 {% endblock %}

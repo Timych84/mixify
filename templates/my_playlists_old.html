@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-center">Your playlists</h1>
+    <div class="container playlist-container">
+        <div class="modal-body">
+            {% if user_playlists %}
+                {% for playlist in user_playlists %}
+                    <div class="playlist-item">
+                        <div class="playlist-number">{{ loop.index }}.</div>
+                        <div class="playlist-info">
+                            {% set playlist_image_url = playlist.images[0].url if playlist.images else url_for('static', filename='/images/no_img.png') %}
+                            <img class="playlist-image" src="{{ playlist_image_url }}" alt="Playlist Image">
+                            <div class="playlist-details">
+                                <h3 class="playlist-name">{{ playlist.name }}</h3>
+                                <p class="playlist-description">{{ playlist.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+            {% else %}
+                <p>No playlists available.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
