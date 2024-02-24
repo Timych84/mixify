@@ -82,7 +82,7 @@ def create_playlist():
             overwrite = request_data.get('overwrite')
             if not playlist_name:
                 return json.dumps({ "success": False, "message": "Please provide a valid playlist name" }), 200
-            time.sleep(1)
+            # time.sleep(1)
             spotify = get_spotify_client(auth_manager)
             create_success, total_mix_playlist_id = create_new_playlist(spotify, playlist_name, overwrite)
             # raise ValueError("Simulated error during playlist creation")
@@ -107,7 +107,7 @@ def create_daily_mix():
             playlists_ids = request_data.get('playlists')
             overwrite = request_data.get('overwrite')
             # overwrite = "off"
-            time.sleep(1)
+            # time.sleep(1)
             spotify = get_spotify_client(auth_manager)
             create_success = create_daily_mix_playlist(spotify, playlist_name, playlists_ids, overwrite)
             if not playlist_name:
