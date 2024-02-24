@@ -6,14 +6,12 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        {% include 'app_description.html' %}
-    </div>
-    <div class="container">
-        <h1>Sign In</h1>
-        <p>Click the button below to sign in:</p>
-        <a href="{{ auth_url }}" class="sign-in">
-            <button>Sign In with Spotify</button>
-        </a>
-    </div>
+    {% include 'app_description.html' %}
+        <div class="text-center">
+            <h1>Sign In</h1>
+            <p>Click the button below to sign in:</p>
+            <a href="{{ auth_url }}" class="sign-in">
+                <button class="btn btn-primary">Sign In with Spotify</button>
+            </a>
+        </div>
 {% endblock %}
