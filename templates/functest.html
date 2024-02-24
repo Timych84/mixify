@@ -3,52 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles_functest.css') }}">
-    <title>Text Transformer</title>
+    <title>Flask App</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Text Transformer</h1>
-        <form id="transformForm">
-            <label for="inputText">Enter Text:</label>
-            <input type="text" id="inputText" name="inputText" required>
-            <button type="button" onclick="transformText()">Transform</button>
-        </form>
-    </div>
-
-    <div class="modal" id="resultModal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <p id="modalText"></p>
-        </div>
-    </div>
+    <h1>Flask App</h1>
+    <form id="myForm" method="post" action="/run-function">
+        <button type="submit">Run Function</button>
+    </form>
+    <div id="result"></div>
 
     <script>
-        function transformText() {
-            var inputText = document.getElementById('inputText').value;
-
-            fetch('/transform', {
+        document.getElementById("myForm").addEventListener("submit", function(event){
+            event.preventDefault();
+            fetch('/run-function', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'inputText=' + encodeURIComponent(inputText),
             })
-            .then(response => response.json())
+            .then(response => response.text())
             .then(data => {
-                document.getElementById('modalText').innerText = 'Transformed Text: ' + data.transformed_text;
-                openModal();
-                setTimeout(closeModal, 3000);
+                document.getElementById('result').innerHTML = data;
             });
-        }
-
-        function openModal() {
-            document.getElementById('resultModal').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('resultModal').style.display = 'none';
-        }
+        });
     </script>
 </body>
 </html>

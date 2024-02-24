@@ -1,31 +1,35 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1  class="text-center py-3">Create New Playlist</h1>
-    <form action="{{ url_for('create_playlist') }}" method="post">
-            <div class="mb-3">
-                <input type="text" class="form-control" id="playlist_name" name="playlist_name"  placeholder="Put new playlist name here" required aria-label="Text input with checkbox">
-            </div>
-            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center align-items-center mb-3">
-                <button type="submit" class="btn btn-success btn-lg">Create Playlist</button>
-                <input class="form-check-input" name="overwrite" type="checkbox" id="inlineFormCheck">
-                <label class="form-check-label" for="inlineFormCheck">Overwrite if exists</label>
-            </div>
-        </div>
-    </form>
-    <div>
-        {% if create_success is defined %}
-            {% if create_success %}
-                <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-                    Playlist created successfully! Overwrite: {{ overwrite }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% else %}
-                <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
-                    Playlist creation failed. Please try again. Overwrite: {{ overwrite }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endif %}
-        {% endif %}
+<h1  class="text-center py-3">Create New Playlist</h1>
+<div class="row mt-3 d-flex justify-content-center align-items-center">
+    <div class="col-md-5">
+        <input type="text" id="newPlaylistName" class="form-control"  value required aria-label="Text input with checkbox">
     </div>
+    <div class="col-md-2 align-items-center">
+        <button id="createNewPlaylist" class="btn btn-primary w-100">Create playlist</button>
+    </div>
+    <div class="col-md-2 align-items-center">
+        <input class="form-check-input" name="overwrite" type="checkbox" id="overwriteCheck">
+        <label class="form-check-label" for="overwriteCheck">Overwrite if exists</label>
+    </div>
+
+</div>
+
+<div class="row justify-content-center">
+    <div id="loadingSpinner" class="spinner-border text-success mt-3" role="status" style="display: none;">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<div class="row justify-content-center mt-3">
+    <div id="successMessage" class="col alert alert-success" role="alert" style="display: none;">
+        Playlist created successfully!
+    </div>
+    <div id="errorMessage" class="col alert alert-danger" role="alert" style="display: none;">
+        Failed to create playlist. Please try again.
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='create_playlist.js') }}"></script>
 {% endblock %}

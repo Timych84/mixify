@@ -1,20 +1,70 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1 class="text-center py-3">Your Spotify playlists</h1>
-            <ul class="list-group"></ul>
-                {% for playlist in playlists %}
-                    {% set playlist_image_url = playlist.images[0].url if playlist.images else url_for('static', filename='/images/no_img.png') %}
-                    <li class="list-group-item d-flex align-items-center border-bottom">
-                            <div class="me-3" style="width: 30px;">{{ loop.index }}.</div>
-                            <div class="flex-shrink-0 my-2">
-                                <img src="{{ playlist_image_url }}" alt="Playlist Image">
-                            </div>
-                            <div class="fw-bold ms-3 align-middle ">
-                                <p class="my-0 fs-5">{{ playlist.name }}</p>
-                                <p class="my-0 fs-6 fw-light">{{ playlist.description }}</p>
-                            </div>
-                    </li>
-                {% endfor %}
-            </ul>
+<h1 class="text-center py-3">Your Spotify Daily Mix playlists</h1>
+<div class="row row-cols-6 g3 ">
+    {% for playlist in playlists %}
+        {% set playlist_image_url = playlist.images[0].url if playlist.images else url_for('static', filename='/images/no_img.png') %}
+        <div class="col">
+            <div class="card bg-success" style="width: 12rem; height: 22rem;">
+                <img src="{{ playlist_image_url }}" alt="Playlist Image">
+                <div class="card-body overflow-hidden">
+                    <h5 class="card-title">{{ playlist.name }}</h5>
+                    <p class="card-text">{{ playlist.description }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<div class="row mt-3 d-flex justify-content-center align-items-center">
+    <div class="col-md-5">
+        <input type="text" id="cardTitleInput" class="form-control" value="Total Daily Mix" aria-label="Card Title">
+    </div>
+    <div class="col-md-2 align-items-center">
+        <button id="showNewPlaylist" class="btn btn-primary w-100">Create playlist</button>
+    </div>
+    <div class="col-md-2 align-items-center">
+        <input class="form-check-input" name="overwrite" type="checkbox" id="overwriteCheck">
+        <label class="form-check-label" for="overwriteCheck">Overwrite if exists</label>
+    </div>
+
+</div>
+
+<div class="row justify-content-center">
+    <div id="loadingSpinner" class="spinner-border text-success mt-3" role="status" style="display: none;">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<div id="mergedImagesContainer"  class="row justify-content-center  mt-3" style="display: none;">
+    <div class="col-md-2">
+        <div class="card bg-success " style="width: 12rem; height: 12rem;">
+            <div id="mergedImages" class="d-flex flex-wrap justify-content-center"></div>
+            <div class="card-body overflow-hidden">
+                <h5 id="cardTitle" class="card-title">Total Daily Mix</h5>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row justify-content-center mt-3">
+    <div id="successMessage" class="col alert alert-success" role="alert" style="display: none;">
+        Playlist created successfully!
+    </div>
+    <div id="errorMessage" class="col alert alert-danger" role="alert" style="display: none;">
+        Failed to create playlist. Please try again.
+    </div>
+</div>
+
+
+<script>
+    var playlists_info = [
+        {% for playlist in playlists %}
+            {
+                "images": ["{{ playlist.images[0].url }}"],
+                "id": "{{ playlist.id }}"
+            }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+</script>
+<script src="{{ url_for('static', filename='daily_mix.js') }}"></script>
 {% endblock %}

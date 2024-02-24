@@ -1,4 +1,4 @@
-import os
+import sys
 from spotipy import cache_handler, oauth2, Spotify
 from config import Config
 from datetime import datetime
@@ -47,11 +47,40 @@ def create_new_playlist(spotify, playlist_name, overwrite):
             existing_playlist = p
             break
     if existing_playlist:
-        if overwrite == "on":
+        # if overwrite == "on":
+        if overwrite:
             spotify.current_user_unfollow_playlist(existing_playlist['id'])
         else:
-            return False
+            return False, None
     current_datetime = datetime.now()
     formatted_datetime = current_datetime.strftime("%d.%m.%Y %H:%M:%S")
-    spotify.user_playlist_create(spotify.current_user()['id'], playlist_name, False, False, f"Generated Total Daily Mix {formatted_datetime}")
-    return True
+    created_playlist = spotify.user_playlist_create(spotify.current_user()['id'], playlist_name, False, False, f"Generated Total Daily Mix {formatted_datetime}")
+    created_playlist_id = created_playlist['id']
+    return True, created_playlist_id
+
+
+def create_daily_mix_playlist(spotify, playlist_name, playlists_ids, overwrite):
+    create_success, total_mix_playlist_id = create_new_playlist(spotify, playlist_name, overwrite)
+    # total_mix_playlist_id = total_mix_playlist['id']
+    if create_success:
+        alltracks = []
+        for playlist_id in playlists_ids:
+            print("Playlist Name:", playlist_id, file=sys.stdout)
+            offset = 0
+            while True:
+                response = spotify.playlist_items(playlist_id, offset=offset, fields='items.track.id,items.track.uri,total', additional_types=['track'])
+                if len(response['items']) == 0:
+                    break
+                alltracks.extend(response['items'])
+                songs_to_add = []
+                for item in response['items']:
+                    songs_to_add.append(item['track']['uri'])
+                spotify.user_playlist_add_tracks(spotify.current_user()['id'], total_mix_playlist_id, songs_to_add)
+
+                # for item in response['items']:
+                #     print(f"track id: {item['track']['id']}")
+                offset = offset + len(response['items'])
+                print(offset, "/", response['total'], file=sys.stdout)
+        return True
+    else:
+        return False
