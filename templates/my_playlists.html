@@ -4,7 +4,7 @@
 <h1 class="text-center py-3">Your Spotify playlists</h1>
 <ul class="list-group"></ul>
     {% for playlist in user_playlists %}
-        {% set playlist_image_url = playlist.images[0].url if playlist.images else url_for('static', filename='/images/no_img.png') %}
+        {% set playlist_image_url = playlist.images[0].url if playlist.images else url_for('static', filename='images/no_img.png') %}
         <li class="list-group-item d-flex align-items-center border-bottom">
                 <div class="me-3" style="width: 30px;">{{ loop.index }}.</div>
                 <div class="flex-shrink-0 my-2">
