@@ -1,12 +1,16 @@
 import os
 import json
-import time
 from flask import Flask, session, request, render_template, redirect
 from flask_session import Session
 from spotipy_helper import create_spotify_auth_manager, get_spotify_client, get_currentuser_playlists, create_new_playlist, create_daily_mix_playlist
 from config import Config
 
+from werkzeug.middleware.proxy_fix import ProxyFix
+
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(
+    app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
+)
 app.config.from_object(Config)
 Session(app)
 
@@ -46,7 +50,7 @@ def daily_mix_generator():
         return redirect('/')
     spotify = get_spotify_client(auth_manager)
     playlists = spotify.search(q="Daily Mix", type="playlist", limit=50)
-    filtered_playlists = [playlist for playlist in playlists['playlists']['items'] if playlist['owner']['id'] == 'spotify']
+    filtered_playlists = [playlist for playlist in playlists['playlists']['items'] if playlist['owner']['id'] == 'spotify' and playlist['name'].startswith('Daily Mix')]
     sorted_playlists = sorted(filtered_playlists, key=lambda x: x['name'].lower())
     return render_template('daily_mix_generator.html', playlists=sorted_playlists)
 
