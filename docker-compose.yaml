@@ -1,0 +1,13 @@
+services:
+  spotifydm-app:
+    build: ./services/web
+    restart: always
+    command: gunicorn -w 3 -t 60 -b 0.0.0.0:5000 app:app --access-logfile '-' --error-logfile '-'
+    env_file:
+      - ./services/web/env/.env.dev
+  nginx:
+    build: ./services/nginx
+    ports:
+      - 8080:80
+    depends_on:
+      - spotifydm-app
