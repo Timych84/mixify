@@ -22,7 +22,7 @@ job-build:
   script:
     - pwd
     - ls -lah
-    - cd /services/web/
+    - cd services/web/
     - docker ps -a
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} registry.timych.ru
     - docker system info
