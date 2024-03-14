@@ -13,7 +13,7 @@ job-test:
     - pip install -r services/web/requirements.txt
     # - python manage.py test
   tags:
-    - docker
+    - k8s
 
 job-build:
   stage: build
