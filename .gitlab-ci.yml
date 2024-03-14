@@ -43,3 +43,5 @@ job-deploy:
     - kubectl config use-context $KUBE_CONTEXT
     - kubectl get pods
     - kubectl get nodes -o wide
+  tags:
+    - k8s
