@@ -33,13 +33,14 @@ job-build:
     - docker push registry.timych.ru/timych/mixify
   tags:
     - docker
-  
+
 job-deploy:
   stage: deploy
-  image: 
+  image:
     name: bitnami/kubectl:latest
     entrypoint: ['']
   script:
+    - kubectl config get-contexts
     - kubectl config use-context $KUBE_CONTEXT
     - kubectl get pods
     - kubectl get nodes -o wide
