@@ -1,5 +1,6 @@
 variables:
   KUBE_CONTEXT: timych/mixify:k8s-connection
+
 stages:
   - test
   - build
@@ -33,11 +34,11 @@ job-build:
   tags:
     - docker
   
-  job-deploy:
-    stage: deploy
-    image: bitnami/kubectl:latest
-    entrypoint: ['']
-    script:
-      - kubectl config use-context $KUBE_CONTEXT
-      - kubectl get pods
-      - kubectl get nodes -o wide
+job-deploy:
+  stage: deploy
+  image: bitnami/kubectl:latest
+  entrypoint: ['']
+  script:
+    - kubectl config use-context $KUBE_CONTEXT
+    - kubectl get pods
+    - kubectl get nodes -o wide
