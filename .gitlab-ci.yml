@@ -36,8 +36,9 @@ job-build:
   
 job-deploy:
   stage: deploy
-  image: bitnami/kubectl:latest
-  entrypoint: ['']
+  image: 
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
   script:
     - kubectl config use-context $KUBE_CONTEXT
     - kubectl get pods
