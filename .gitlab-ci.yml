@@ -37,7 +37,7 @@ job-build:
 job-deploy:
   stage: deploy
   image:
-    name: alpine/helm:3.14.3
+    name: dtzar/helm-kubectl:3.14
     entrypoint: ['']
   before_script:
     - echo ${kube_config}
