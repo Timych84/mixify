@@ -37,13 +37,13 @@ job-build:
 job-deploy:
   stage: deploy
   image:
-    name: alpine/helm:3.14.3
+    name: bitnami/kubectl:latest
     entrypoint: ['']
   script:
-    # - kubectl config get-contexts
-    # - kubectl config use-context $KUBE_CONTEXT
-    # - kubectl get pods
-    # - kubectl get nodes -o wide
+    - kubectl config get-contexts
+    - kubectl config use-context $KUBE_CONTEXT
+    - kubectl get pods
+    - kubectl get nodes -o wide
     - helm list -A
     - echo $KUBE_CONFIG
     - helm upgrade mixiy-v1 mixify --install --namespace mixify-v1 --create-namespace --set mixifySpec.clientid=$MIXIFY_CLIENTID --set mixifySpec.clientsecret=$MIXIFY_CLIENTSECRET
