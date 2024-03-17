@@ -37,8 +37,10 @@ job-build:
 job-deploy:
   stage: deploy
   image:
-    name: bitnami/kubectl:latest
+    name: alpine/helm:3.14.3
     entrypoint: ['']
+  before_script:
+    - echo ${kube_config}
   script:
     - kubectl config get-contexts
     - kubectl config use-context $KUBE_CONTEXT
