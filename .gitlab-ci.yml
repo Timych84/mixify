@@ -29,8 +29,8 @@ job-build:
     - docker ps -a
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} registry.timych.ru
     - docker system info
-    - docker build -t registry.timych.ru/timych/mixify services/web/.
-    - docker push registry.timych.ru/timych/mixify
+    - docker build -t ${CI_REGISTRY}/timych/mixify services/web/.
+    - docker push ${CI_REGISTRY}/timych/mixify
   tags:
     - docker
 
