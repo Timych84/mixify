@@ -28,6 +28,7 @@ job-build:
   script:
     - pwd
     - ls -lah
+    - echo ${CI_PROJECT_PATH}
     # - cd services/web/
     - docker ps -a
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
