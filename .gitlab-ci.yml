@@ -30,9 +30,9 @@ job-build:
     - ls -lah
     # - cd services/web/
     - docker ps -a
-    - docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} registry.timych.ru
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker system info
-    - docker build -t ${CI_REGISTRY}/${IMAGE_NAME} .
+    - docker build -t ${CI_REGISTRY}/${IMAGE_NAME} services/web/.
     - docker push ${CI_REGISTRY}/${IMAGE_NAME}
   tags:
     - docker
