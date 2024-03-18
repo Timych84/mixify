@@ -42,6 +42,7 @@ job-deploy:
   before_script:
     - echo ${kube_config}
   script:
+    - ls -la
     - kubectl config get-contexts
     - kubectl config use-context $KUBE_CONTEXT
     - kubectl get pods
