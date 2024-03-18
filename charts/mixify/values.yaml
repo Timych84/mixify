@@ -1,0 +1,20 @@
+replicaCount: 1
+
+multitoolImage:
+  repository: timych84/mixify
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+mixifySpec:
+  targetPort: 5000
+  clientid: default_client_id
+  clientsecret: default_client_secret
+  redirecturi: 'http://netology.example.local'
+  url: netology.example.local
+
+
+service:
+  name: multitool-service
+  type: ClusterIP
+  httpPort: 9002
+  httpsPort: 9443

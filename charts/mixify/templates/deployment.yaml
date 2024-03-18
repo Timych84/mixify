@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-mixify
+  labels:
+    app: {{ .Release.Name }}-mixify
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-mixify
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-mixify
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-mixify
+          imagePullPolicy: {{ .Values.multitoolImage.pullPolicy }}
+          image: "{{ .Values.multitoolImage.repository }}:{{ .Values.multitoolImage.tag }}"
+          command: ["gunicorn"]
+          args: ["-w 3", "-t 60", "-b 0.0.0.0:5000", "app:app", "--access-logfile '-'"," --error-logfile '-'"]
+          env:
+          - name: "SPOTIPY_CLIENT_ID"
+            valueFrom:
+              secretKeyRef:
+                name: mixify-secret
+                key: mixify.clientid
+          - name: "SPOTIPY_CLIENT_SECRET"
+            valueFrom:
+              secretKeyRef:
+                name: mixify-secret
+                key: mixify.clientsecret
+          - name: "SPOTIPY_REDIRECT_URI"
+            valueFrom:
+              secretKeyRef:
+                name: mixify-secret
+                key: mixify.redirecturi
+          resources:
+            limits:
+              cpu: "0.1"
+              memory: "128Mi"
