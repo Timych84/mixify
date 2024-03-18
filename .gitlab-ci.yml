@@ -23,7 +23,7 @@ job-build:
   # variables:
   #   DOCKER_TLS_CERTDIR: "/certs"
   variables:
-    IMAGE_NAME: timych/mixify:${CI_COMMIT_SHORT_SHA}
+    IMAGE_NAME: ${CI_PROJECT_PATH}:${CI_COMMIT_SHORT_SHA}
 
   script:
     - pwd
