@@ -58,6 +58,7 @@ job-deploy:
     - helm plugin install https://github.com/chartmuseum/helm-push
     - ls -la ./charts/
     - helm cm-push ./charts/${CI_PROJECT_NAME}*.tgz ${CI_PROJECT_NAME} 
+    - helm repo list
     - helm upgrade mixiy-v1 mixify --install --namespace mixify-v1 --create-namespace --set mixifySpec.clientid=$MIXIFY_CLIENTID --set mixifySpec.clientsecret=$MIXIFY_CLIENTSECRET
   tags:
     - k8s
