@@ -1,5 +1,5 @@
 variables:
-  KUBE_CONTEXT: timych/k8s-home-connection:k8s-home-connection
+  KUBE_CONTEXT: timych/k8s-connection:k8s-home-connection
 
 stages:
   - test
