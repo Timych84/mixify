@@ -46,13 +46,13 @@ job-deploy:
   before_script:
     - echo ${kube_config}
   script:
-    # - ls -la
-    # - kubectl config get-contexts
-    # - kubectl config use-context $KUBE_CONTEXT
-    # - kubectl get pods
-    # - kubectl get nodes -o wide
-    # - helm list -A
-    # - echo $KUBE_CONFIG
+    - ls -la
+    - kubectl config get-contexts
+    - kubectl config use-context $KUBE_CONTEXT
+    - kubectl get pods
+    - kubectl get nodes -o wide
+    - helm list -A
+    - echo $KUBE_CONFIG
     - helm package ./charts/mixify --destination ./charts
     - helm repo add --username gitlab-ci-token --password ${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable
     - helm plugin install https://github.com/chartmuseum/helm-push
