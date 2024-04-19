@@ -58,6 +58,6 @@ job-deploy:
     - helm plugin install https://github.com/chartmuseum/helm-push
     - ls -la ./charts/
     - helm cm-push ./charts/${CI_PROJECT_NAME}*.tgz ${CI_PROJECT_NAME} 
-    - helm upgrade mixiy-v1 ${CI_PROJECT_NAME}/${CI_PROJECT_NAME} --install --namespace mixify-v1 --create-namespace --set mixifySpec.clientid=$MIXIFY_CLIENTID --set mixifySpec.clientsecret=$MIXIFY_CLIENTSECRET --set mixifySpec.redirecturi="http://netology.example.local"
+    - helm upgrade mixiy-v1 ${CI_PROJECT_NAME}/${CI_PROJECT_NAME} --install --namespace mixify-v1 --create-namespace --set mixifySpec.clientid=$MIXIFY_CLIENTID --set mixifySpec.clientsecret=$MIXIFY_CLIENTSECRET --set mixifySpec.redirecturi="http://mixify.timych.ru"
   tags:
     - k8s
