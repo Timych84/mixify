@@ -36,7 +36,9 @@ job-build:
     - docker system info
     - docker build -t $TAG_COMMIT -t $TAG_LATEST services/web/.
     # - docker build -t ${CI_REGISTRY}/${IMAGE_NAME} 
-    - docker push ${CI_REGISTRY}/${IMAGE_NAME}
+    # - docker push ${CI_REGISTRY}/${IMAGE_NAME}
+    - docker push $TAG_COMMIT
+    - docker push $TAG_LATEST    
   tags:
     - docker
 
