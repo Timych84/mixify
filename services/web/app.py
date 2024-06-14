@@ -1,4 +1,6 @@
 import os
+import sys
+import re
 import json
 from flask import Flask, session, request, render_template, redirect
 from flask_session import Session
@@ -67,8 +69,14 @@ def daily_mix_generator():
     if not auth_manager.validate_token(auth_manager.cache_handler.get_cached_token()):
         return redirect('/')
     spotify = get_spotify_client(auth_manager)
-    playlists = spotify.search(q="Daily Mix", type="playlist", limit=50)
-    filtered_playlists = [playlist for playlist in playlists['playlists']['items'] if playlist['owner']['id'] == 'spotify' and playlist['name'].startswith('Daily Mix')]
+    playlists = spotify.search(q="Daily Mix", type="playlist", limit=50, offset=50)
+    # for playlist in playlists["playlists"]["items"]:
+    #     print(f"Playlist Name: {playlist['name']}, Owner: {playlist['owner']['display_name']}, Ownerid: {playlist['owner']['id']}", file=sys.stdout)
+
+    pattern = re.compile(r'^Daily Mix [1-9]$')
+    filtered_playlists = [playlist for playlist in playlists['playlists']['items'] if playlist['owner']['id'] == 'spotify' and pattern.match(playlist['name'])]
+    # filtered_playlists = [playlist for playlist in playlists['playlists']['items'] if playlist['owner']['id'] == 'spotify' and playlist['name'].startswith('Daily Mix')]
+    # filtered_playlists = [playlist for playlist in playlists['playlists']['items'] if playlist['owner']['display_name'] == 'Spotify']
     sorted_playlists = sorted(filtered_playlists, key=lambda x: x['name'].lower())
     return render_template('daily_mix_generator.html', playlists=sorted_playlists)
 
