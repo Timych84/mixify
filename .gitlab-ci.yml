@@ -75,5 +75,6 @@ job-deploy-prod:
   script:
     - ls -la
     - echo $KUBE_CONFIG
+    - docker pull $TAG_LATEST    
   tags:
     - k8s
