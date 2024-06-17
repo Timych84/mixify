@@ -35,14 +35,14 @@ job-build:
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker system info
     - docker build -t $TAG_COMMIT -t $TAG_LATEST services/web/.
-    # - docker build -t ${CI_REGISTRY}/${IMAGE_NAME} 
+    # - docker build -t ${CI_REGISTRY}/${IMAGE_NAME}
     # - docker push ${CI_REGISTRY}/${IMAGE_NAME}
     - docker push $TAG_COMMIT
-    - docker push $TAG_LATEST    
+    - docker push $TAG_LATEST
   tags:
     - docker
 
-job-deploy:
+job-deploy-stage:
   stage: deploy
   image:
     name: dtzar/helm-kubectl:3.14
@@ -61,7 +61,19 @@ job-deploy:
     - helm repo add --username gitlab-ci-token --password ${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable
     - helm plugin install https://github.com/chartmuseum/helm-push
     - ls -la ./charts/
-    - helm cm-push ./charts/${CI_PROJECT_NAME}*.tgz ${CI_PROJECT_NAME} 
+    - helm cm-push ./charts/${CI_PROJECT_NAME}*.tgz ${CI_PROJECT_NAME}
     - helm upgrade mixiy-v1 ${CI_PROJECT_NAME}/${CI_PROJECT_NAME} --install --namespace mixify-v1 --create-namespace --set mixifySpec.clientid=$MIXIFY_CLIENTID --set mixifySpec.clientsecret=$MIXIFY_CLIENTSECRET --set mixifySpec.redirecturi="https://mixify.timych.ru"
+  tags:
+    - k8s
+
+
+job-deploy-prod:
+  stage: deploy
+  image: docker:20.10
+  before_script:
+    - echo ${kube_config}
+  script:
+    - ls -la
+    - echo $KUBE_CONFIG
   tags:
     - k8s

@@ -20,7 +20,7 @@ body {
 }
 
 .playlist-container {
-    max-height: 85vh;
+    max-height: 80vh;
     margin-bottom: 40px;
     overflow:auto;
     scrollbar-width: thin;
