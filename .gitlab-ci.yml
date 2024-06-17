@@ -40,7 +40,7 @@ job-build:
     - docker push $TAG_COMMIT
     - docker push $TAG_LATEST
   tags:
-    - k8s
+    - docker
 
 job-deploy-stage:
   stage: deploy
@@ -77,4 +77,4 @@ job-deploy-prod:
     - echo $KUBE_CONFIG
     - docker pull $TAG_LATEST    
   tags:
-    - k8s
+    - docker
