@@ -85,7 +85,7 @@ job-deploy-prod:
     - VERSION=$(echo "$CI_COMMIT_REF_NAME" | sed 's/^v//')
     - chmod 600 ~/.ssh/id_ed25519
     - chmod 600 ~/.ssh/id_ed25519.pub    
-    - ssh $SERVER_USER@$SERVER_HOST "df -h && docker ps -a"    
+    - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "df -h && docker ps -a"    
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
     - docker pull $TAG_LATEST    
   tags:
