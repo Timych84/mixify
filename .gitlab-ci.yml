@@ -80,6 +80,7 @@ job-deploy-prod:
     - echo "$SSH_PUBLIC_KEY" >> ~/.ssh/id_ed25519.pub
     - cat ~/.ssh/id_ed25519.pub
     - ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
+    - cat ~/.ssh/id_ed25519.pub    
     - VERSION=$(echo "$CI_COMMIT_REF_NAME" | sed 's/^v//')
     - chmod 600 ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa.pub    
