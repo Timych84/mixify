@@ -40,7 +40,7 @@ job-build:
     - docker push $TAG_COMMIT
     - docker push $TAG_LATEST
   tags:
-    - docker
+    - k8s
 
 job-deploy-stage:
   stage: deploy
