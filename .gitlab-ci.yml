@@ -75,18 +75,18 @@ job-deploy-prod:
   script:
     - ls -la
     - echo $KUBE_CONFIG
-    - mkdir -p ~/.ssh/    
+    - mkdir -p ~/.ssh/
     - echo "$SSH_PRIVATE_KEY" >> ~/.ssh/id_ed25519
     - echo "$SSH_PUBLIC_KEY" >> ~/.ssh/id_ed25519.pub
     - cat ~/.ssh/id_ed25519.pub
     - nslookup $SERVER_HOST
     - ssh-keyscan -p $SERVER_PORT -H $SERVER_HOST >> ~/.ssh/known_hosts --verbose
-    - cat ~/.ssh/id_ed25519.pub    
+    - cat ~/.ssh/id_ed25519.pub
     - VERSION=$(echo "$CI_COMMIT_REF_NAME" | sed 's/^v//')
     - chmod 600 ~/.ssh/id_ed25519
-    - chmod 600 ~/.ssh/id_ed25519.pub    
-    - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "df -h && docker ps -a"    
-    - docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-    - docker pull $TAG_LATEST    
+    - chmod 600 ~/.ssh/id_ed25519.pub
+    - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "df -h && docker ps -a"
+    - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}"
+    - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "docker pull $TAG_LATEST"
   tags:
     - docker
