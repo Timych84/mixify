@@ -88,7 +88,7 @@ job-deploy-prod:
     - echo "$ENV_PRODUCTION" >> env-production
     - cat env-production
     - echo $TAG_COMMIT
-    - sed -i 's/^TAG=.*$/TAG='"$TAG_COMMIT"'/' env-production
+    - sed -i 's/^TAG=.*$/TAG='test'/' env-production
     - cat env-production
     - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "df -h && docker ps -a"
     - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}"
