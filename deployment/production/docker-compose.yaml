@@ -1,0 +1,12 @@
+services:
+  mixify:
+    image: ${TAG_PROD}
+    restart: always
+    command: gunicorn -w 3 -t 60 -b 0.0.0.0:5000 app:app --access-logfile '-' --error-logfile '-'
+    env_file:
+      - .env
+    networks:
+      - mixify_internal
+networks:
+  mixify_internal:
+    external: true
