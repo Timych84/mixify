@@ -97,6 +97,6 @@ job-deploy-prod:
     - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cat /srv/mixify/.env "
     - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "df -h && docker ps -a"
     - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}"
-    - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "docker pull $TAG_LATEST"
+    - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cd /srv/mixify/ && docker compose pull"
   tags:
     - docker
