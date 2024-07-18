@@ -73,30 +73,24 @@ job-deploy-prod:
   before_script:
     - echo ${kube_config}
   script:
-    - ls -la
-    - echo $KUBE_CONFIG
     - mkdir -p ~/.ssh/
     - echo "$SSH_PRIVATE_KEY" >> ~/.ssh/id_ed25519
     - echo "$SSH_PUBLIC_KEY" >> ~/.ssh/id_ed25519.pub
-    - cat ~/.ssh/id_ed25519.pub
-    - nslookup $SERVER_HOST
     - ssh-keyscan -p $SERVER_PORT -H $SERVER_HOST >> ~/.ssh/known_hosts --verbose
-    - cat ~/.ssh/id_ed25519.pub
     - VERSION=$(echo "$CI_COMMIT_REF_NAME" | sed 's/^v//')
     - chmod 600 ~/.ssh/id_ed25519
     - chmod 600 ~/.ssh/id_ed25519.pub
+    - touch env-production
+    - chmod 660 env-production
     - echo "$ENV_PRODUCTION" >> env-production
+    - echo "TAG=$TAG_COMMIT" >> env-production
     - echo "SPOTIPY_CLIENT_ID=$MIXIFY_CLIENTID" >> env-production
     - echo "SPOTIPY_CLIENT_SECRET=$MIXIFY_CLIENTSECRET" >> env-production
     - echo "SPOTIPY_REDIRECT_URI=$MIXIFY_REDIRECT_URI">> env-production
-    - sed -i "s|^TAG=.*$|TAG=${TAG_COMMIT}|" env-production
-    - ls -la
-    - chmod 660 env-production
-    - ls -la
+    # - sed -i "s|^TAG=.*$|TAG=${TAG_COMMIT}|" env-production
     - scp -P $SERVER_PORT env-production $SERVER_USER@$SERVER_HOST:/srv/mixify/.env
-    - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cat /srv/mixify/.env "
-    - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "df -h && docker ps -a"
     - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}"
-    - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cd /srv/mixify/ && docker compose up -d"
+    - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cat /srv/mixify/.env"
+    # - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cd /srv/mixify/ && docker compose up -d"
   tags:
     - docker
