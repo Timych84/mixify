@@ -69,7 +69,7 @@ def daily_mix_generator():
     if not auth_manager.validate_token(auth_manager.cache_handler.get_cached_token()):
         return redirect('/')
     spotify = get_spotify_client(auth_manager)
-    playlists = spotify.search(q="Daily Mix", type="playlist", limit=50, offset=50)
+    playlists = spotify.search(q="Daily Mix", type="playlist", limit=50, offset=0)
     # for playlist in playlists["playlists"]["items"]:
     #     print(f"Playlist Name: {playlist['name']}, Owner: {playlist['owner']['display_name']}, Ownerid: {playlist['owner']['id']}", file=sys.stdout)
 
