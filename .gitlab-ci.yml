@@ -83,7 +83,7 @@ job-deploy-prod:
     - touch env-production
     - chmod 660 env-production
     # - echo "$ENV_PRODUCTION" >> env-production
-    - echo "TAG=$TAG_COMMIT" >> env-production
+    - echo "TAG_PROD=$TAG_COMMIT" >> env-production
     - echo "SPOTIPY_CLIENT_ID=$MIXIFY_CLIENTID" >> env-production
     - echo "SPOTIPY_CLIENT_SECRET=$MIXIFY_CLIENTSECRET" >> env-production
     - echo "SPOTIPY_REDIRECT_URI=$MIXIFY_REDIRECT_URI">> env-production
