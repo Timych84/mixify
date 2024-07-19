@@ -71,27 +71,29 @@ job-deploy-prod:
   stage: deploy
   image: docker:20.10
   before_script:
-    - echo ${kube_config}
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -p $SERVER_PORT $SERVER_HOST >> ~/.ssh/known_hosts
   script:
-    - mkdir -p ~/.ssh/
-    - echo "$SSH_PRIVATE_KEY" >> ~/.ssh/id_ed25519
-    - echo "$SSH_PUBLIC_KEY" >> ~/.ssh/id_ed25519.pub
-    - ssh-keyscan -p $SERVER_PORT -H $SERVER_HOST >> ~/.ssh/known_hosts --verbose
-    - VERSION=$(echo "$CI_COMMIT_REF_NAME" | sed 's/^v//')
-    - chmod 600 ~/.ssh/id_ed25519
-    - chmod 600 ~/.ssh/id_ed25519.pub
     - touch env-production
     - chmod 660 env-production
-    # - echo "$ENV_PRODUCTION" >> env-production
-    - echo "TAG_PROD=$TAG_COMMIT" >> env-production
-    - echo "SPOTIPY_CLIENT_ID=$MIXIFY_CLIENTID" >> env-production
-    - echo "SPOTIPY_CLIENT_SECRET=$MIXIFY_CLIENTSECRET" >> env-production
-    - echo "SPOTIPY_REDIRECT_URI=$MIXIFY_REDIRECT_URI">> env-production
-    # - sed -i "s|^TAG=.*$|TAG=${TAG_COMMIT}|" env-production
+    - |
+      cat <<EOF > env-production
+      TAG_PROD=$TAG_COMMIT
+      SPOTIPY_CLIENT_ID=$MIXIFY_CLIENTID
+      SPOTIPY_CLIENT_SECRET=$MIXIFY_CLIENTSECRET
+      SPOTIPY_REDIRECT_URI=$MIXIFY_REDIRECT_URI
+      EOF
     - scp -P $SERVER_PORT env-production $SERVER_USER@$SERVER_HOST:/srv/mixify/.env
     - scp -r -P $SERVER_PORT deployment/production/* $SERVER_USER@$SERVER_HOST:/srv/mixify/
-    - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}"
-    - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cat /srv/mixify/.env"
-    - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cd /srv/mixify/ && docker compose up -d"
+    - ssh -A -p $SERVER_PORT $SERVER_USER@$SERVER_HOST <<EOF
+      set -e
+      docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+      cd /srv/mixify/
+      docker compose up -d
+      docker image prune -af
+      EOF
   tags:
     - docker
