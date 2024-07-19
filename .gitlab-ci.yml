@@ -89,7 +89,7 @@ job-deploy-prod:
     - echo "SPOTIPY_REDIRECT_URI=$MIXIFY_REDIRECT_URI">> env-production
     # - sed -i "s|^TAG=.*$|TAG=${TAG_COMMIT}|" env-production
     - scp -P $SERVER_PORT env-production $SERVER_USER@$SERVER_HOST:/srv/mixify/.env
-    - scp -r -P $SERVER_PORT deployment/production/ $SERVER_USER@$SERVER_HOST:/srv/mixify/
+    - scp -r -P $SERVER_PORT deployment/production $SERVER_USER@$SERVER_HOST:/srv/mixify/
     - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}"
     - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cat /srv/mixify/.env"
     - ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cd /srv/mixify/ && docker compose up -d"
