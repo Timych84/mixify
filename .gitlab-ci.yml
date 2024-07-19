@@ -88,7 +88,7 @@ job-deploy-prod:
       EOF
     - scp -P $SERVER_PORT env-production $SERVER_USER@$SERVER_HOST:/srv/mixify/.env
     - scp -r -P $SERVER_PORT deployment/production/* $SERVER_USER@$SERVER_HOST:/srv/mixify/
-    - ssh -A -p $SERVER_PORT $SERVER_USER@$SERVER_HOST <<EOF
+    - ssh -A -p $SERVER_PORT $SERVER_USER@$SERVER_HOST <<'EOF'
         set -e
         echo "Starting deployment..."
         echo "Current directory:"
