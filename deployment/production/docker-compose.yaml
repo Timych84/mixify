@@ -8,7 +8,7 @@ services:
     networks:
       - mixify_internal
     volumes:
-      - ./.flask_session:/home/app/flask_session
+      - ./.flask_session:/home/app/.flask_session
     logging:
       driver: "json-file"
       options:
