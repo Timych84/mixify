@@ -7,6 +7,11 @@ services:
       - .env
     networks:
       - mixify_internal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   mixify_internal:
