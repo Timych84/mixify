@@ -88,8 +88,8 @@ job-deploy-prod:
       EOF
     - scp -P $SERVER_PORT env-production $SERVER_USER@$SERVER_HOST:/srv/mixify/.env
     - scp -r -P $SERVER_PORT deployment/production/* $SERVER_USER@$SERVER_HOST:/srv/mixify/
-    - ssh -A -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}"    
-    - ssh -A -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cd /srv/mixify/ && docker compose up -d"
+    - ssh -A -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}"
+    - ssh -A -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cd /srv/mixify/ && docker compose up --force-recreate -d"
     - ssh -A -p $SERVER_PORT $SERVER_USER@$SERVER_HOST <<EOF
         echo "Starting deployment..."
         echo "Current directory:"
@@ -99,6 +99,6 @@ job-deploy-prod:
         echo "Deployment completed."
       EOF
   after_script:
-    - ssh-agent -k      
+    - ssh-agent -k
   tags:
     - docker
