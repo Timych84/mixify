@@ -98,7 +98,7 @@ job-deploy-prod:
         echo "Listing directory contents:"
         ls -la
         echo "Deployment completed."
-        EOF
+      EOF
     - echo "After multi-line SSH command"
   after_script:
     - ssh-agent -k
