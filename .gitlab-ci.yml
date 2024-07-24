@@ -91,13 +91,13 @@ job-deploy-prod:
     - ssh -A -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}"
     - ssh -A -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cd /srv/mixify/ && docker compose up -d --wait --force-recreate "
     - echo "Before multi-line SSH command"
-    - ssh -A -p $SERVER_PORT $SERVER_USER@$SERVER_HOST bash <<'EOF'
-        echo "Starting deployment..."
-        echo "Current directory:"
-        pwd
-        echo "Listing directory contents:"
-        ls -la
-        echo "Deployment completed."
+    - ssh -A -p $SERVER_PORT $SERVER_USER@$SERVER_HOST <<'EOF'
+      echo "Starting deployment..."
+      echo "Current directory:"
+      pwd
+      echo "Listing directory contents:"
+      ls -la
+      echo "Deployment completed."
       EOF
     - echo "After multi-line SSH command"
   after_script:
