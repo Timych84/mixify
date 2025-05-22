@@ -1,10 +1,8 @@
 import os
-import sys
-import re
 import json
 from flask import Flask, session, request, render_template, redirect
 from flask_session import Session
-from spotipy_helper import create_spotify_auth_manager, get_spotify_client, get_currentuser_playlists, create_new_playlist, create_daily_mix_playlist
+from spotipy_helper import create_spotify_auth_manager, get_spotify_client, get_currentuser_playlists, create_new_playlist, create_daily_mix_playlist, get_daily_playlists
 from config import Config
 
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -60,10 +58,7 @@ def userinfo():
     spotify = get_spotify_client(auth_manager)
     userinfo = spotify.current_user()
     spotify.user_playlist_add_tracks(spotify.current_user()['id'], '37i9dQZF1E36UCcYuaeLMW', ["spotify:track:6kTmm86ReTESad5jX4Bpoo"])
-
     return userinfo
-
-
 
 
 @app.route('/daily_mix_generator')
@@ -72,16 +67,8 @@ def daily_mix_generator():
     if not auth_manager.validate_token(auth_manager.cache_handler.get_cached_token()):
         return redirect('/')
     spotify = get_spotify_client(auth_manager)
-    playlists = spotify.search(q="Daily Mix", type="playlist", limit=50, offset=0)
-    # for playlist in playlists["playlists"]["items"]:
-    #     print(f"Playlist Name: {playlist['name']}, Owner: {playlist['owner']['display_name']}, Ownerid: {playlist['owner']['id']}", file=sys.stdout)
-
-    pattern = re.compile(r'^Daily Mix [1-9]$')
-    filtered_playlists = [playlist for playlist in playlists['playlists']['items'] if playlist['owner']['id'] == 'spotify' and pattern.match(playlist['name'])]
-    # filtered_playlists = [playlist for playlist in playlists['playlists']['items'] if playlist['owner']['id'] == 'spotify' and playlist['name'].startswith('Daily Mix')]
-    # filtered_playlists = [playlist for playlist in playlists['playlists']['items'] if playlist['owner']['display_name'] == 'Spotify']
-    sorted_playlists = sorted(filtered_playlists, key=lambda x: x['name'].lower())
-    return render_template('daily_mix_generator.html', playlists=sorted_playlists)
+    daily_playlists = get_daily_playlists(spotify)
+    return render_template('daily_mix_generator.html', playlists=daily_playlists)
 
 
 @app.route('/create_playlist', methods=['GET', 'POST'])
@@ -121,16 +108,11 @@ def create_daily_mix():
             playlist_name = request_data.get('playlist_name')
             playlists_ids = request_data.get('playlists')
             overwrite = request_data.get('overwrite')
-            # overwrite = "off"
-            # time.sleep(1)
             spotify = get_spotify_client(auth_manager)
             create_success = create_daily_mix_playlist(spotify, playlist_name, playlists_ids, overwrite)
             if not playlist_name:
                 return json.dumps({ "success": False, "message": "Please provide a valid playlist name" }), 400
 
-            # Call the function to create the playlist
-            # For demonstration, assuming playlist creation is successful
-            # raise ValueError("Simulated error during playlist creation")
             if create_success:
                 return json.dumps({ "success": True, "message": "Playlist created successfully" }), 200
             else:

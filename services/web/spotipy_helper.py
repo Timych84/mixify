@@ -1,4 +1,5 @@
 import sys
+import re
 from spotipy import cache_handler, oauth2, Spotify
 from config import Config
 from datetime import datetime
@@ -25,19 +26,47 @@ def validate_spotify_token(auth_manager):
 def get_currentuser_playlists(spotify, sort_by='name', ascending=True):
     playlists = []
     offset = 0
-    limit = 50  # Maximum number of playlists to retrieve per request
+    limit = 50
 
     while True:
         response = spotify.current_user_playlists(limit=limit, offset=offset)
 
         if not response['items']:
-            break  # No more playlists
+            break
 
         playlists.extend(response['items'])
         offset += limit
     playlists = sorted(playlists, key=lambda x: x[sort_by], reverse=not ascending)
     return playlists
 
+
+def get_daily_playlists(spotify):
+    playlists = []
+    offset = 0
+    limit = 50
+    total = None
+    while True:
+        response = spotify.search(q="Daily Mix", type="playlist", limit=limit, offset=offset)
+        if total is None:
+            total = response['playlists']['total']
+        if not response['playlists']['items']:
+            break
+        items = response['playlists']['items']
+        valid_items = [item for item in items if item is not None]
+        if not valid_items:
+            break
+        playlists.extend(valid_items)
+        offset += limit
+        if offset >= total:
+            break
+    # for playlist in playlists:
+    #     print(f"Playlist Name: {playlist['name']}, Owner: {playlist['owner']['display_name']}, Ownerid: {playlist['owner']['id']}", file=sys.stdout)
+
+    pattern = re.compile(r'^Daily Mix [1-9]$')
+    filtered_playlists = [playlist for playlist in playlists if playlist['owner']['id'] == 'spotify' and pattern.match(playlist['name'])]
+    sorted_playlists = sorted(filtered_playlists, key=lambda x: x['name'].lower())
+
+    return sorted_playlists
 
 def create_new_playlist(spotify, playlist_name, overwrite):
     user_playlists = get_currentuser_playlists(spotify, sort_by='name', ascending=True)
