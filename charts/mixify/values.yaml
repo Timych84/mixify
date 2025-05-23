@@ -14,7 +14,6 @@ mixifySpec:
 
 
 service:
-  name: multitool-service
   type: ClusterIP
   httpPort: 9002
   httpsPort: 9443
