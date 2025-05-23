@@ -12,3 +12,4 @@ spec:
   type: {{ .Values.service.type }}
   selector:
     app: {{ .Release.Name }}-mixify
+kube
