@@ -132,4 +132,9 @@ def current_user():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True, port=int(os.environ.get("PORT", 5000)))
+    app.run(
+        host=app.config.get("HOST"),
+        port=app.config.get("PORT"),
+        debug=True,
+        threaded=True
+    )

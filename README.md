@@ -1,6 +1,7 @@
 # Mixify - Spotify Playlist Manager
 
-Mixify is an application for managing Spotify playlists, creating new playlists, and generating daily mixes. It is built with Flask and interacts with the Spotify API to provide personalized playlist management features.
+Mixify is a Flask-based web application that generates personalized Spotify playlists by leveraging the Spotify Web API through the Spotipy library. Designed to enhance your music experience, Mixify allows users to create dynamic playlists based on their listening habits.
+
 
 ## Features
 
