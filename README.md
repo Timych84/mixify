@@ -2,46 +2,113 @@
 
 Mixify is a Flask-based web application that generates personalized Spotify playlists by leveraging the Spotify Web API through the Spotipy library. Designed to enhance your music experience, Mixify allows users to create dynamic playlists based on their listening habits.
 
-
 ## Features
+- **Spotify Integration**: Authenticate users via Spotify's OAuth and access their listening data.
 
 - **List User Playlists**: View all playlists associated with your Spotify account.
 - **Create Playlists**: Easily create new playlists and add songs to them.
 - **Generate Daily Mixes**: Automatically generate daily mixes based on your listening history and preferences.
 
-## Getting Started
+## Technologies Used
+- Backend: Python, Flask
+- API Integration: Spotipy (Spotify Web API)
+- Deployment: GitLab CI/CD (docker compose, helm)
+- Containerization: Docker (optional)
 
+
+# Deployment methods
+- Python flask app
+- Docker compose
+- Helm chart
+
+## Python flask app
 ### Prerequisites
 
-Before running the application, you need to have Python installed on your system.
+- Python 3.6 or higher
+- Spotify Developer Account (for API credentials)
 
-### Installation
+### Steps
 
 1. Clone the repository:
 
+    ```bash
+    git clone https://gitlab.timych.ru/timych/mixify.git
+    cd mixify/services/web
     ```
-    git clone https://github.com/Timych84/mixify.git
+2. Create a Virtual Environment:
+     ```bash
+    python3 -m venv venv
+    source venv/bin/activate
     ```
-
-2. Navigate to the project directory:
-
-    ```
-    cd mixify
-    ```
-
 3. Install dependencies:
-
-    ```
+    ```bash
     pip install -r requirements.txt
     ```
+4. Set Environment Variables:
 
-4. Run the application:
+   Create a .env file(or copy from .env.example) with the following content:
+   ```ini
+    SPOTIPY_CLIENT_ID=your_spotify_client_id
+    SPOTIPY_CLIENT_SECRET=your_spotify_client_secret
+    SPOTIPY_REDIRECT_URI=http://localhost:5000/callback
+    FLASK_APP=app.py
+    FLASK_ENV=development
+    FLASK_RUN_HOST=0.0.0.0
+   ```
+
+5. Run the application:
 
     ```
-    python app.py
+    flask run
     ```
 
-5. Access the application at [http://localhost:5000](http://localhost:5000) in your web browser.
+6. Access the application at [http://localhost:5000](http://localhost:5000) in your web browser.
+
+
+## Docker compose
+### Prerequisites
+- Docker installed on host
+- Spotify Developer Account (for API credentials)
+
+### Steps
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://gitlab.timych.ru/timych/mixify.git
+    cd mixify
+    ```
+2. Create a Virtual Environment:
+     ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+3. Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+4. Set Environment Variables:
+
+   Create a .env file(or copy from .env.example) with the following content:
+   ```ini
+    SPOTIPY_CLIENT_ID=your_spotify_client_id
+    SPOTIPY_CLIENT_SECRET=your_spotify_client_secret
+    SPOTIPY_REDIRECT_URI=http://localhost:5000/callback
+    FLASK_APP=app.py
+    FLASK_ENV=development
+    FLASK_RUN_HOST=0.0.0.0
+   ```
+
+5. Run the application:
+
+    ```
+    flask run
+    ```
+
+6. Access the application at [http://localhost:5000](http://localhost:5000) in your web browser.
+
+
+
 
 ## Usage
 

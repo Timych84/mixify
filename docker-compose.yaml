@@ -4,7 +4,7 @@ services:
     restart: always
     command: gunicorn -w 3 -t 60 -b 0.0.0.0:5000 app:app --access-logfile '-' --error-logfile '-'
     env_file:
-      - ./services/web/env/.env.dev
+      - ./mixify.env
   nginx:
     build: ./services/nginx
     ports:
