@@ -19,8 +19,8 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}-mixify
-          imagePullPolicy: {{ .Values.multitoolImage.pullPolicy }}
-          image: "{{ .Values.multitoolImage.repository }}:{{ .Values.multitoolImage.tag }}"
+          imagePullPolicy: {{ .Values.mixifyImage.pullPolicy }}
+          image: "{{ .Values.mixifyImage.repository }}:{{ .Values.mixifyImage.tag }}"
           command: ["gunicorn"]
           args: ["-w 3", "-t 60", "-b 0.0.0.0:5000", "app:app", "--access-logfile '-'"," --error-logfile '-'"]
           env:

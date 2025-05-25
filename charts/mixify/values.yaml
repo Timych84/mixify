@@ -1,9 +1,9 @@
 replicaCount: 1
 
-multitoolImage:
-  repository: timych84/mixify
+mixifyImage:
+  repository: registry.timych.ru/timych/mixify
   tag: "latest"
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 mixifySpec:
   targetPort: 5000

@@ -78,37 +78,74 @@ Mixify is a Flask-based web application that generates personalized Spotify play
     git clone https://gitlab.timych.ru/timych/mixify.git
     cd mixify
     ```
-2. Create a Virtual Environment:
-     ```bash
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
-3. Install dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
-4. Set Environment Variables:
+2. Set Environment Variables:
 
-   Create a .env file(or copy from .env.example) with the following content:
+   Edit a mixify.env file(oput your API credentials) with the following content:
    ```ini
     SPOTIPY_CLIENT_ID=your_spotify_client_id
     SPOTIPY_CLIENT_SECRET=your_spotify_client_secret
     SPOTIPY_REDIRECT_URI=http://localhost:5000/callback
-    FLASK_APP=app.py
-    FLASK_ENV=development
-    FLASK_RUN_HOST=0.0.0.0
    ```
-
-5. Run the application:
+3. Modify docker-compose.yaml if needed(i.g. port, nginx config)
+3. Run the application:
 
     ```
-    flask run
+    docker compose up
     ```
 
-6. Access the application at [http://localhost:5000](http://localhost:5000) in your web browser.
+6. Access the application at [http://localhost:8080](http://localhost:8080) in your web browser.
+
+
+## Helm
+### Prerequisites
+- Access to K8S cluster
+- Spotify Developer Account (for API credentials)
+
+### Steps
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://gitlab.timych.ru/timych/mixify.git
+    cd mixify
+    ```
+2. Set values for chart:
+
+   Edit a mixify.env file(oput your API credentials) with the following content:
+   ```yaml
+    replicaCount: 1
+
+    mixifyImage:
+      repository: timych84/mixify
+      tag: "latest"
+      pullPolicy: IfNotPresent
+
+    mixifySpec:
+      targetPort: 5000
+      clientid: default_client_id
+      clientsecret: default_client_secret
+      redirecturi: 'http://your-spotify-redirect.url'
+      url: your-spotify-redirect.url
+
+
+    service:
+      name: multitool-service
+      type: ClusterIP
+      httpPort: 9002
+      httpsPort: 9443
+   ```
+3. Modify docker-compose.yaml if needed(i.g. port, nginx config)
+3. Run the application:
+
+    ```
+    docker compose up
+    ```
+
+6. Access the application at [http://localhost:8080](http://localhost:8080) in your web browser.
 
 
 
+helm upgrade  --install  -f charts/mixify/values.yaml  mixify-local ./charts/mixify --namespace mixify-test --create-namespace
 
 ## Usage
 
