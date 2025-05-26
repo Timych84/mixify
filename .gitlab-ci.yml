@@ -11,9 +11,8 @@ job-test:
   stage: test
   image: python:alpine3.17
   script:
-    - echo "Publishing Helm chart to GitLab Pages"
-    - ls -la
-    # - pip install -r services/web/requirements.txt
+    - echo "Testing requirements"
+    - pip install -r services/web/requirements.txt
     # - python manage.py test
   tags:
     - k8s
@@ -27,18 +26,11 @@ job-docker-build:
   #   DOCKER_TLS_CERTDIR: "/certs"
   variables:
     IMAGE_NAME: ${CI_PROJECT_PATH}:${CI_COMMIT_SHORT_SHA}
-
   script:
-    - pwd
-    - ls -lah
     - echo ${CI_PROJECT_PATH}
     # - cd services/web/
-    - docker ps -a
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-    - docker system info
     - docker build -t $TAG_COMMIT -t $TAG_LATEST services/web/.
-    # - docker build -t ${CI_REGISTRY}/${IMAGE_NAME}
-    # - docker push ${CI_REGISTRY}/${IMAGE_NAME}
     - docker push $TAG_COMMIT
     - docker push $TAG_LATEST
   tags:
@@ -55,20 +47,12 @@ job-helm-build:
     - echo ${kube_config}
     - helm plugin install https://github.com/chartmuseum/helm-push
   script:
-    - ls -la
-    - kubectl config get-contexts
-    - kubectl config use-context $KUBE_CONTEXT
-    - kubectl get pods
-    - kubectl get nodes -o wide
-    - helm list -A
-    - echo $KUBE_CONFIG
     # Package chart
     - helm package ./charts/mixify --destination ./public
     # Generate index.yaml for GitLab Pages
     - helm repo index public --url "https://pages.timych.ru/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}"
     # Add and push to GitLab Package Registry
     - helm repo add --username gitlab-ci-token --password ${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable
-    - ls -la ./charts/
     - helm cm-push ./public/mixify-*.tgz ${CI_PROJECT_NAME}
   artifacts:
     paths:
@@ -80,7 +64,6 @@ pages:
   stage: deploy
   script:
     - echo "Publishing Helm chart to GitLab Pages"
-    - ls -la
   artifacts:
     paths:
       - public
@@ -93,17 +76,11 @@ job-deploy-stage:
     name: dtzar/helm-kubectl:3.14
     entrypoint: ['']
   script:
-    - kubectl config get-contexts
     - kubectl config use-context $KUBE_CONTEXT
-    - kubectl get pods
-    - kubectl get nodes -o wide
-    - helm list -A
-    - echo $KUBE_CONFIG
     - helm repo add --username gitlab-ci-token --password ${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable
-    - ls -la ./charts/
     - helm upgrade mixify-v1 ${CI_PROJECT_NAME}/${CI_PROJECT_NAME} --install --namespace mixify-v1 --create-namespace --set mixifySpec.clientid=$MIXIFY_CLIENTID --set mixifySpec.clientsecret=$MIXIFY_CLIENTSECRET --set mixifySpec.redirecturi="https://mixify.timych.ru" --set mixifySpec.url="mixify.timych.ru"
-  rules:
-    - when: manual
+  # rules:
+  #   - when: manual
   tags:
     - k8s
 
@@ -135,7 +112,7 @@ job-deploy-prod:
     - echo "After multi-line SSH command"
   after_script:
     - ssh-agent -k
-  rules:
-    - when: manual
+  # rules:
+  #   - when: manual
   tags:
     - docker
