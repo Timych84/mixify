@@ -92,19 +92,10 @@ job-deploy-stage:
   image:
     name: dtzar/helm-kubectl:3.14
     entrypoint: ['']
-  before_script:
-    - echo ${kube_config}
   script:
-    - ls -la
-    - kubectl config get-contexts
-    - kubectl config use-context $KUBE_CONTEXT
-    - kubectl get pods
-    - kubectl get nodes -o wide
-    - helm list -A
-    - echo $KUBE_CONFIG
     - helm repo add --username gitlab-ci-token --password ${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable
     - ls -la ./charts/
-    - helm upgrade mixiy-v1 ${CI_PROJECT_NAME}/${CI_PROJECT_NAME} --install --namespace mixify-v1 --create-namespace --set mixifySpec.clientid=$MIXIFY_CLIENTID --set mixifySpec.clientsecret=$MIXIFY_CLIENTSECRET --set mixifySpec.redirecturi="https://mixify.timych.ru" --set mixifySpec.url="mixify.timych.ru"
+    - helm upgrade mixify-v1 ${CI_PROJECT_NAME}/${CI_PROJECT_NAME} --install --namespace mixify-v1 --create-namespace --set mixifySpec.clientid=$MIXIFY_CLIENTID --set mixifySpec.clientsecret=$MIXIFY_CLIENTSECRET --set mixifySpec.redirecturi="https://mixify.timych.ru" --set mixifySpec.url="mixify.timych.ru"
   rules:
     - when: manual
   tags:
