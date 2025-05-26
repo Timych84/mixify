@@ -3,4 +3,4 @@ name: mixify
 description: A Helm chart for mixify
 type: application
 version: 0.1.2
-appVersion: "0.1.2"
+appVersion: "0.1.7"
