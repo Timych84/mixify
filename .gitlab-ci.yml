@@ -67,7 +67,7 @@ job-helm-build:
     # Add and push to GitLab Package Registry    
     - helm repo add --username gitlab-ci-token --password ${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable
     - ls -la ./charts/
-    - helm cm-push ./charts/${CI_PROJECT_NAME}*.tgz ${CI_PROJECT_NAME}
+    - helm cm-push ./public/mixify-*.tgz ${CI_PROJECT_NAME}
   tags:
     - k8s
 
