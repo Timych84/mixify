@@ -12,7 +12,7 @@ job-test:
   image: python:alpine3.17
   script:
     - echo "Publishing Helm chart to GitLab Pages"
-    - ls -la    
+    - ls -la
     # - pip install -r services/web/requirements.txt
     # - python manage.py test
   tags:
@@ -62,11 +62,11 @@ job-helm-build:
     - kubectl get nodes -o wide
     - helm list -A
     - echo $KUBE_CONFIG
-    # Package chart    
+    # Package chart
     - helm package ./charts/mixify --destination ./public
     # Generate index.yaml for GitLab Pages
-    - helm repo index public --url "https://${CI_PROJECT_NAMESPACE}.gitlab.io/${CI_PROJECT_NAME}"    
-    # Add and push to GitLab Package Registry    
+    - helm repo index public --url "https://pages.timych.ru/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}"
+    # Add and push to GitLab Package Registry
     - helm repo add --username gitlab-ci-token --password ${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable
     - ls -la ./charts/
     - helm cm-push ./public/mixify-*.tgz ${CI_PROJECT_NAME}

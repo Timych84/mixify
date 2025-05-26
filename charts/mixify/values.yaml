@@ -9,9 +9,8 @@ mixifySpec:
   targetPort: 5000
   clientid: default_client_id
   clientsecret: default_client_secret
-  redirecturi: 'http://mixify.timych.ru'
-  url: mixify.timych.ru
-
+  redirecturi: 'http://your-spotify-redirect.url'
+  url: your-spotify-redirect.url
 
 service:
   name: multitool-service
