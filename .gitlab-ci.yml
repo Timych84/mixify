@@ -72,6 +72,8 @@ pages:
 
 job-deploy-stage:
   stage: deploy
+  environment:
+    name: stage
   image:
     name: dtzar/helm-kubectl:3.14
     entrypoint: ['']
@@ -87,6 +89,8 @@ job-deploy-stage:
 
 job-deploy-prod:
   stage: deploy
+  environment:
+    name: prod
   image: docker:20.10
   before_script:
     - eval $(ssh-agent -s)
