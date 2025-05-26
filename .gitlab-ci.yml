@@ -68,8 +68,21 @@ job-helm-build:
     - helm repo add --username gitlab-ci-token --password ${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable
     - ls -la ./charts/
     - helm cm-push ./public/mixify-*.tgz ${CI_PROJECT_NAME}
+  artifacts:
+    paths:
+      - public
   tags:
     - k8s
+
+pages:
+  stage: deploy
+  script:
+    - echo "Publishing Helm chart to GitLab Pages"
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
 
 job-deploy-stage:
   stage: deploy
