@@ -16,7 +16,7 @@ job-test:
   tags:
     - k8s
 
-job-build:
+job-docker-build:
   stage: build
   image: docker:20.10
   # services:
@@ -42,6 +42,35 @@ job-build:
   tags:
     - docker
 
+job-helm-build:
+  stage: build
+  image:
+    name: dtzar/helm-kubectl:3.14
+    entrypoint: ['']
+  variables:
+    IMAGE_NAME: ${CI_PROJECT_PATH}:${CI_COMMIT_SHORT_SHA}
+  before_script:
+    - echo ${kube_config}
+    - helm plugin install https://github.com/chartmuseum/helm-push
+  script:
+    - ls -la
+    - kubectl config get-contexts
+    - kubectl config use-context $KUBE_CONTEXT
+    - kubectl get pods
+    - kubectl get nodes -o wide
+    - helm list -A
+    - echo $KUBE_CONFIG
+    # Package chart    
+    - helm package ./charts/mixify --destination ./public
+    # Generate index.yaml for GitLab Pages
+    - helm repo index public --url "https://${CI_PROJECT_NAMESPACE}.gitlab.io/${CI_PROJECT_NAME}"    
+    # Add and push to GitLab Package Registry    
+    - helm repo add --username gitlab-ci-token --password ${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable
+    - ls -la ./charts/
+    - helm cm-push ./charts/${CI_PROJECT_NAME}*.tgz ${CI_PROJECT_NAME}
+  tags:
+    - k8s
+
 job-deploy-stage:
   stage: deploy
   image:
@@ -63,6 +92,8 @@ job-deploy-stage:
     - ls -la ./charts/
     - helm cm-push ./charts/${CI_PROJECT_NAME}*.tgz ${CI_PROJECT_NAME}
     - helm upgrade mixiy-v1 ${CI_PROJECT_NAME}/${CI_PROJECT_NAME} --install --namespace mixify-v1 --create-namespace --set mixifySpec.clientid=$MIXIFY_CLIENTID --set mixifySpec.clientsecret=$MIXIFY_CLIENTSECRET --set mixifySpec.redirecturi="https://mixify.timych.ru"
+  rules:
+    - when: manual
   tags:
     - k8s
 
@@ -94,5 +125,7 @@ job-deploy-prod:
     - echo "After multi-line SSH command"
   after_script:
     - ssh-agent -k
+  rules:
+    - when: manual
   tags:
     - docker
