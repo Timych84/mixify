@@ -11,7 +11,9 @@ job-test:
   stage: test
   image: python:alpine3.17
   script:
-    - pip install -r services/web/requirements.txt
+    - echo "Publishing Helm chart to GitLab Pages"
+    - ls -la    
+    # - pip install -r services/web/requirements.txt
     # - python manage.py test
   tags:
     - k8s
@@ -78,7 +80,7 @@ pages:
   stage: deploy
   script:
     - echo "Publishing Helm chart to GitLab Pages"
-    - la -la
+    - ls -la
   artifacts:
     paths:
       - public
