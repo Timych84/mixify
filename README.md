@@ -103,15 +103,15 @@ Mixify is a Flask-based web application that generates personalized Spotify play
 
 ### Steps
 
-1. Clone the repository:
+1. Add Helm repository:
 
     ```bash
-    git clone https://gitlab.timych.ru/timych/mixify.git
-    cd mixify
+    helm repo add mixify https://pages.timych.ru/timych/mixify
+    helm repo update mixify
     ```
 2. Set values for chart:
 
-   Edit a mixify.env file(oput your API credentials) with the following content:
+   Edit a mixify.env file(put your API credentials) with the following content:
    ```yaml
     replicaCount: 1
 
@@ -134,16 +134,13 @@ Mixify is a Flask-based web application that generates personalized Spotify play
       httpPort: 9002
       httpsPort: 9443
    ```
-3. Modify docker-compose.yaml if needed(i.g. port, nginx config)
-3. Run the application:
 
+3. Install the application:
     ```
-    docker compose up
+    helm upgrade --install  mixify-test mixify/mixify -f charts/mixify/values.yaml --namespace mixify --create-namespace
     ```
 
-6. Access the application at [http://localhost:8080](http://localhost:8080) in your web browser.
-
-
+6. Access the application by mixifySpec.url(from values.yaml) in your web browser.
 
 helm upgrade  --install  -f charts/mixify/values.yaml  mixify-local ./charts/mixify --namespace mixify-test --create-namespace
 
