@@ -2,7 +2,7 @@ import os
 import json
 from flask import Flask, session, request, render_template, redirect
 from flask_session import Session
-from spotipy_helper import create_spotify_auth_manager, get_spotify_client, get_currentuser_playlists, create_new_playlist, create_daily_mix_playlist, get_daily_playlists
+from spotipy_helper import create_spotify_auth_manager, get_spotify_client, get_currentuser_playlists, create_new_playlist, create_daily_mix_playlist, get_daily_playlists, spotify_authorized_only
 from config import Config
 
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -37,11 +37,13 @@ def sign_out():
 
 
 @app.route('/recommendations')
+@spotify_authorized_only
 def recommendations():
     return redirect('/')
 
 
 @app.route('/myplaylists')
+@spotify_authorized_only
 def myplaylists():
     auth_manager = create_spotify_auth_manager(session)
     if not auth_manager.validate_token(auth_manager.cache_handler.get_cached_token()):
@@ -51,6 +53,7 @@ def myplaylists():
     return render_template('my_playlists.html', user_playlists=user_playlists)
 
 @app.route('/userinfo')
+@spotify_authorized_only
 def userinfo():
     auth_manager = create_spotify_auth_manager(session)
     if not auth_manager.validate_token(auth_manager.cache_handler.get_cached_token()):
@@ -62,6 +65,7 @@ def userinfo():
 
 
 @app.route('/daily_mix_generator')
+@spotify_authorized_only
 def daily_mix_generator():
     auth_manager = create_spotify_auth_manager(session)
     if not auth_manager.validate_token(auth_manager.cache_handler.get_cached_token()):
@@ -72,6 +76,7 @@ def daily_mix_generator():
 
 
 @app.route('/create_playlist', methods=['GET', 'POST'])
+@spotify_authorized_only
 def create_playlist():
     auth_manager = create_spotify_auth_manager(session)
     if not auth_manager.validate_token(auth_manager.cache_handler.get_cached_token()):
@@ -98,6 +103,7 @@ def create_playlist():
 
 
 @app.route('/create_daily_mix', methods=['POST'])
+@spotify_authorized_only
 def create_daily_mix():
     auth_manager = create_spotify_auth_manager(session)
     if not auth_manager.validate_token(auth_manager.cache_handler.get_cached_token()):
@@ -123,6 +129,7 @@ def create_daily_mix():
 
 
 @app.route('/current_user')
+@spotify_authorized_only
 def current_user():
     auth_manager = create_spotify_auth_manager(session)
     if not auth_manager.validate_token(auth_manager.cache_handler.get_cached_token()):

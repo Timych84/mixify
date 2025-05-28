@@ -1,8 +1,30 @@
 import sys
+from functools import wraps
+from flask import redirect, session, render_template
 import re
 from spotipy import cache_handler, oauth2, Spotify
+from spotipy.exceptions import SpotifyException
 from config import Config
 from datetime import datetime
+
+
+# Decorattore to check if the user is authorized with Spotify
+# and redirect to the unauthorized page if not authorized.
+def spotify_authorized_only(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        auth_manager = create_spotify_auth_manager(session)
+        if not auth_manager.validate_token(auth_manager.cache_handler.get_cached_token()):
+            return redirect('/')
+        spotify = get_spotify_client(auth_manager)
+        try:
+            spotify.current_user_playlists(limit=1)
+        except (SpotifyException) as e:
+            print(f"Spotify auth failed: {type(e).__name__}: {e}")
+            return render_template('api_unauthorized.html')
+        return f(*args, **kwargs)
+    return decorated_function
+
 
 def create_spotify_auth_manager(session):
     return oauth2.SpotifyOAuth(
