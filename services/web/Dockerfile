@@ -1,34 +1,37 @@
-FROM python:3.10.13-alpine3.19
+# ---------- Build stage ----------
+FROM python:3.10-alpine3.19 AS builder
 
+# RUN apk add --no-cache build-base
 
-# get curl for healthchecks
-RUN apk add curl
+WORKDIR /app
+COPY requirements.txt .
 
-# permissions and nonroot user for tightened security
-RUN adduser -D nonroot && \
-    mkdir -p /home/app /var/log/flask-app && \
-    touch /var/log/flask-app/flask-app.err.log /var/log/flask-app/flask-app.out.log && \
-    chown -R nonroot:nonroot /home/app /var/log/flask-app
-WORKDIR /home/app
+# Create venv and install dependencies
+RUN python -m venv /opt/venv && \
+    /opt/venv/bin/pip install --no-cache-dir --upgrade pip && \
+    /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+
+# ---------- Final stage ----------
+FROM python:3.10-alpine3.19
+
+# Copy venv from builder
+COPY --from=builder /opt/venv /opt/venv
+
+# Set environment variables
+ENV PATH="/opt/venv/bin:$PATH" \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# Nonroot user and curl for healthcheck
+RUN adduser -D nonroot && apk add --no-cache curl
 USER nonroot
+WORKDIR /home/app
 
-# copy all the files to the container
+
 COPY --chown=nonroot:nonroot . .
 
-# venv
-ENV VIRTUAL_ENV=/home/app/venv
-
-# python setup
-RUN python -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-
-# upgrade pip
-RUN pip install --upgrade pip
-
-RUN export FLASK_APP=app.py
-RUN pip install -r requirements.txt
-RUN pip --version
-# define the port number the container should expose
+# Healthcheck and port exposure
 EXPOSE 5000
+HEALTHCHECK CMD curl -f http://localhost:5000/ || exit 1
 
-CMD ["python", "app.py"]
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
