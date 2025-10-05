@@ -35,3 +35,4 @@ EXPOSE 5000
 HEALTHCHECK CMD curl -f http://localhost:5000/ || exit 1
 
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
+0=
