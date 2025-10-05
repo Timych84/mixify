@@ -30,7 +30,7 @@ job-docker-build:
     - echo ${CI_PROJECT_PATH}
     # - cd services/web/
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
-    - docker build -t $TAG_COMMIT -t $TAG_LATEST services/web/.
+    - docker build --no-cache -t $TAG_COMMIT -t $TAG_LATEST services/web/.
     - docker push $TAG_COMMIT
     - docker push $TAG_LATEST
   tags:
